@@ -8,15 +8,20 @@
     :root{ --bg:#0b1220; --bg-2:#0f172a; --fg:#e2e8f0; --muted:#94a3b8; --accent:#22d3ee; --accent-2:#38bdf8; --border:#1f2937; }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{margin:0;font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial;background:linear-gradient(180deg,var(--bg),var(--bg-2));color:var(--fg);overflow:hidden}
-    .app{display:grid;grid-template-columns:240px 1fr;height:100vh}
+    body{margin:0;font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial;background:linear-gradient(180deg,var(--bg),var(--bg-2));color:var(--fg);overflow:hidden;position:relative}
 
-    /* Sidebar ..*/
-    aside{background:rgba(17,24,39,.9);border-right:1px solid var(--border);padding:14px 12px;display:flex;flex-direction:column;gap:12px}
+    /* Imagen de fondo visible en todo el sitio MENOS en el visor principal */
+    .bg{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;opacity:.18;z-index:-1;pointer-events:none}
+
+    .app{display:grid;grid-template-columns:240px 1fr;height:100vh}
+    .app.collapsed{grid-template-columns:1fr}
+    .app.collapsed aside{display:none}
+
+    /* Sidebar */
+    aside{background:rgba(17,24,39,.85);border-right:1px solid var(--border);padding:14px 12px;display:flex;flex-direction:column;gap:12px}
     .brand{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:12px;background:rgba(34,211,238,.08);border:1px solid var(--border)}
     .logo{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 6px 24px rgba(34,211,238,.35)}
     .brand h1{font-size:16px;margin:0}
-
     .list{display:flex;flex-direction:column;gap:8px;overflow:auto;padding-right:4px}
     .rbtn{appearance:none;display:block;width:100%;text-align:left;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:#0b1220;color:var(--fg);cursor:pointer;font-size:14px}
     .rbtn:hover{border-color:var(--accent)}
@@ -24,9 +29,12 @@
 
     /* Viewer */
     main{position:relative}
-    .viewer{position:relative;width:100%;height:100vh}
-    iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-    .empty{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted)}
+    .viewer{position:relative;width:100%;height:100vh;background:#0b1220} /* fondo sólido para ocultar la imagen en el panel principal */
+    iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:none}
+
+    /* Botón flotante para mostrar menú cuando está colapsado */
+    .fab{position:fixed;top:12px;left:12px;z-index:20;display:none;background:#0b1220;border:1px solid var(--border);color:var(--fg);border-radius:12px;padding:10px 12px;cursor:pointer}
+    .app.collapsed .fab{display:block}
 
     /* Mobile */
     @media (max-width: 900px){
@@ -35,87 +43,65 @@
       aside.open{transform:translateX(0)}
       .overlay{display:none}
       .overlay.show{display:block;position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(2px)}
-      .topbar{display:flex;gap:8px;position:fixed;top:8px;left:8px;z-index:11}
-      .topbar .menu{background:#0b1220;border:1px solid var(--border);color:var(--fg);border-radius:10px;padding:8px 10px}
+      .app.collapsed aside{display:block;transform:translateX(-100%)}
     }
   </style>
 </head>
 <body>
-  <div class="app">
+  <!-- 🔧 Cambia la ruta a tu imagen -->
+  <img class="bg" src="assets/centronet-hero.jpg" alt="CentroNet Analytics" />
+
+  <div class="app" id="app">
     <aside id="sidebar">
       <div class="brand">
         <div class="logo" aria-hidden="true"></div>
         <h1>CentroNet Analytics</h1>
       </div>
-      <div class="list" id="reportList" aria-label="Listado de reportes"></div>
-      <div class="hint" style="font-size:12px;color:var(--muted)">Para agregar o cambiar enlaces, edita el código (array <code>DEFAULT_REPORTS</code>) y publica.</div>
+
+      <!-- 🔧 BOTONES ESTÁTICOS: edítalos aquí en HTML -->
+      <div class="list" id="reportList" aria-label="Listado de reportes">
+        <button class="rbtn active" data-src="https://app.powerbi.com/view?r=eyJrIjoiNGU3OWUzMjQtMmM3OS00MDE1LWIzMWEtMzFhNTg5ZGJiZDA3IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">PBI Zeiss</button>
+        <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiNzQxYmY1M2QtYjg3Yy00NzljLTlhOWYtYTg2N2JlZjRkYjJmIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">PBI QBano</button>
+        <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiZGViZmIyNzctNWQ4My00NTkxLTgxZjAtNjBiNjBiMmI1YzI2IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">PBI ICesi</button>
+        <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiNjc3ZTNkMTktZGU5OS00MmEzLWJiNjEtZTIzYjg3Yjk5NDUxIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">PBI Frisby</button>
+      </div>
     </aside>
 
     <div class="overlay" id="overlay"></div>
 
     <main>
-      <div class="topbar"><button class="menu" id="openSidebar" aria-label="Abrir menú">☰</button></div>
+      <button class="fab" id="menuBtn" aria-label="Mostrar menú">☰ Menú</button>
       <div class="viewer" id="viewer">
-        <div class="empty" id="empty">Selecciona un reporte</div>
         <iframe id="frame" allowfullscreen title="Power BI"></iframe>
       </div>
     </main>
   </div>
 
   <script>
-    // === SOLO LECTURA ===
-    // Edita aquí tus reportes. Solo nombres (botones) en el panel izquierdo.
-    const DEFAULT_REPORTS = [
-      {
-        id: 'cn-ejecutivo',
-        name: 'CN · Ejecutivo',
-        src: 'https://app.powerbi.com/view?r=eyJrIjoiMWI3NDRkZmQtNGFlNC00OTYzLTg5YzAtMmQ1MDI0OWIyZWIxIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9'
-      }
-      // { id:'ventas', name:'Ventas Regional', src:'https://app.powerbi.com/view?r=...' },
-      // { id:'finanzas', name:'Finanzas', src:'https://app.powerbi.com/view?r=...' },
-    ];
+    // === LÓGICA: usa los botones que ya están en el HTML ===
+    const app = document.getElementById('app');
+    const frame = document.getElementById('frame');
 
-    const reports = DEFAULT_REPORTS;
-    let selectedId = null;
-
-    function renderList(){
-      const list = document.getElementById('reportList');
-      list.innerHTML = '';
-      reports.forEach(r=>{
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'rbtn' + (r.id===selectedId? ' active':'');
-        btn.textContent = r.name;
-        btn.dataset.id = r.id;
-        btn.onclick = ()=> selectReport(r.id);
-        list.appendChild(btn);
-      });
+    function selectByButton(btn){
+      document.querySelectorAll('.rbtn').forEach(b=>b.classList.toggle('active', b===btn));
+      const src = btn.dataset.src;
+      if(src){ frame.style.display='block'; frame.src = src; app.classList.add('collapsed'); }
+      // hash para compartir vista
+      const textId = btn.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g,'-');
+      location.hash = 'r=' + encodeURIComponent(textId);
     }
 
-    function selectReport(id){
-      const r = reports.find(x=>x.id===id);
-      const frame = document.getElementById('frame');
-      const empty = document.getElementById('empty');
-      if(!r){ frame.removeAttribute('src'); empty.style.display='grid'; return; }
-      selectedId = id;
-      document.querySelectorAll('.rbtn').forEach(n=>n.classList.toggle('active', n.dataset.id===id));
-      frame.src = r.src; empty.style.display='none';
-      // permite compartir la vista actual
-      location.hash = 'r=' + encodeURIComponent(id);
-    }
+    // listeners
+    document.querySelectorAll('.rbtn').forEach(btn=>{
+      btn.addEventListener('click', ()=> selectByButton(btn));
+    });
 
-    // Sidebar móvil
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('overlay');
-    const openBtn = document.getElementById('openSidebar');
-    if(openBtn){ openBtn.onclick = ()=>{ sidebar.classList.add('open'); overlay.classList.add('show'); }; }
-    if(overlay){ overlay.onclick = ()=>{ sidebar.classList.remove('open'); overlay.classList.remove('show'); }; }
+    // Botón para mostrar el menú cuando está colapsado
+    document.getElementById('menuBtn').onclick = ()=>{ app.classList.remove('collapsed'); };
 
-    // Init
-    renderList();
-    const hashId = new URLSearchParams(location.hash.replace(/^#/,'')).get('r');
-    const firstId = reports[0] && reports[0].id;
-    selectReport(hashId && reports.some(r=>r.id===hashId) ? hashId : firstId);
+    // Inicializa: carga el primero (marcado .active)
+    const first = document.querySelector('.rbtn.active') || document.querySelector('.rbtn');
+    if(first) selectByButton(first);
   </script>
 </body>
 </html>
