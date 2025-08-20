@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard & Presentación</title>
+  <style>
+    :root { --bg:#0f172a; --fg:#e2e8f0; --muted:#94a3b8; --card:#111827; --accent:#22d3ee; }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial,Apple Color Emoji,Segoe UI Emoji;background:linear-gradient(180deg,#0b1220,#0f172a);color:var(--fg)}
+    header{padding:24px 16px; text-align:center;}
+    header h1{margin:0;font-size:clamp(20px,3vw,32px)}
+    header p{margin:8px 0 0;color:var(--muted)}
+    .container{max-width:1200px;margin:0 auto;padding:16px}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:16px}
+    .tab{border:1px solid #1f2937;border-radius:999px;padding:10px 14px;background:#0b1220;color:var(--fg);cursor:pointer;opacity:.8}
+    .tab.active{background:var(--accent);color:#0b1220;opacity:1}
+    .card{background:rgba(17,24,39,.7);border:1px solid #1f2937;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+    .aspect{position:relative;width:100%;aspect-ratio:16/9;border-radius:12px;overflow:hidden}
+    iframe,embed{position:absolute;inset:0;width:100%;height:100%;border:0}
+    footer{opacity:.7;text-align:center;padding:24px 16px;font-size:14px}
+    .help{font-size:14px;color:var(--muted);text-align:center;margin:12px 0 0}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>CentroNet Analytics</h1>
+  </header>
+
+  <div class="container">
+    <div class="tabs">
+      <button class="tab active" data-target="#bi">Power BI</button>
+      <button class="tab" data-target="#ppt">Presentación</button>
+    </div>
+
+    <section id="bi" class="card">
+      <div class="aspect">
+        <!-- Reemplaza la URL del src por TU iframe público de Power BI (Publish to web) -->
+        <iframe allowfullscreen src=https://app.powerbi.com/view?r=eyJrIjoiMWI3NDRkZmQtNGFlNC00OTYzLTg5YzAtMmQ1MDI0OWIyZWIxIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9></iframe>
+      </div>
+    </section>
+
+    <section id="ppt" class="card" style="display:none">
+      <div class="aspect">
+        <!-- Opción A (OneDrive/SharePoint -> Insertar): pega aquí el SRC del iframe que te da PowerPoint en la web -->
+        <iframe allowfullscreen
+        src="https://centronetsas-my.sharepoint.com/personal/bgarcia_centronet_com_co/_layouts/15/Doc.aspx?	sourcedoc={5e857ac4-8026-488c-9fbb-c1c21975e4fc}&amp;action=embedview&amp;wdAr=1.7777777777777777"
+        width="476" height="288" frameborder="0">
+</iframe>
+        <!-- Opción B (Google Slides -> Publicar en la Web): sustituye el iframe por el de Slides -->
+        <!-- Opción C: Exporta a PDF y usa <embed src="ruta/archivo.pdf#view=FitH" type="application/pdf"> -->
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    Hecho con ♥. "Without data, you're just another person with an opinion."
+                 -W. Edwards Deming
+  </footer>
+
+  <script>
+    // Tabs mínimas sin dependencias
+    const tabs = document.querySelectorAll('.tab');
+    const sections = { '#bi': document.querySelector('#bi'), '#ppt': document.querySelector('#ppt') };
+    tabs.forEach(btn=>btn.addEventListener('click',()=>{
+      tabs.forEach(b=>b.classList.toggle('active', b===btn));
+      Object.values(sections).forEach(s=>s.style.display='none');
+      sections[btn.dataset.target].style.display='block';
+    }));
+  </script>
+</body>
+</html>
