@@ -3,70 +3,141 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dashboard & Presentación</title>
+  <title>CentroNet Analytics · Visor (solo lectura)</title>
   <style>
-    :root { --bg:#0f172a; --fg:#e2e8f0; --muted:#94a3b8; --card:#111827; --accent:#22d3ee; }
+    :root{ --bg:#0b1220; --bg-2:#0f172a; --card:#111827; --muted:#94a3b8; --fg:#e2e8f0; --accent:#22d3ee; --accent-2:#38bdf8; --border:#1f2937; }
     *{box-sizing:border-box}
-    body{margin:0;font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial,Apple Color Emoji,Segoe UI Emoji;background:linear-gradient(180deg,#0b1220,#0f172a);color:var(--fg)}
-    header{padding:24px 16px; text-align:center;}
-    header h1{margin:0;font-size:clamp(20px,3vw,32px)}
-    header p{margin:8px 0 0;color:var(--muted)}
-    .container{max-width:1200px;margin:0 auto;padding:16px}
-    .tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:16px}
-    .tab{border:1px solid #1f2937;border-radius:999px;padding:10px 14px;background:#0b1220;color:var(--fg);cursor:pointer;opacity:.8}
-    .tab.active{background:var(--accent);color:#0b1220;opacity:1}
-    .card{background:rgba(17,24,39,.7);border:1px solid #1f2937;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
-    .aspect{position:relative;width:100%;aspect-ratio:16/9;border-radius:12px;overflow:hidden}
-    iframe,embed{position:absolute;inset:0;width:100%;height:100%;border:0}
-    footer{opacity:.7;text-align:center;padding:24px 16px;font-size:14px}
-    .help{font-size:14px;color:var(--muted);text-align:center;margin:12px 0 0}
+    html,body{height:100%}
+    body{margin:0;font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial;background:linear-gradient(180deg,var(--bg),var(--bg-2));color:var(--fg)}
+    .app{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+
+    aside{background:rgba(17,24,39,.8);border-right:1px solid var(--border);padding:14px 12px;display:flex;flex-direction:column;gap:12px}
+    .brand{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:12px;background:rgba(34,211,238,.08);border:1px solid var(--border)}
+    .logo{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 6px 24px rgba(34,211,238,.35)}
+    .brand h1{font-size:16px;margin:0}
+    .hint{font-size:12px;color:var(--muted)}
+
+    .list{display:flex;flex-direction:column;gap:6px;overflow:auto;padding-right:4px}
+    .item{display:flex;align-items:center;gap:8px;padding:10px;border:1px solid var(--border);border-radius:12px;background:#0b1220;cursor:pointer;opacity:.9}
+    .item:hover{opacity:1;border-color:var(--accent)}
+    .item.active{background:linear-gradient(180deg,#0b1220,#102035);border-color:var(--accent)}
+    .item .dot{width:8px;height:8px;border-radius:999px;background:var(--accent)}
+    .item .name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+    main{position:relative;padding:12px}
+    header.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:10px 12px;border:1px solid var(--border);border-radius:14px;background:rgba(17,24,39,.6)}
+    .title{font-size:14px;color:var(--muted)}
+    .current{font-weight:600;color:var(--fg)}
+
+    .viewer{height:calc(100vh - 24px);background:rgba(17,24,39,.7);border:1px solid var(--border);border-radius:16px;overflow:hidden;position:relative}
+    iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+    .empty{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted)}
+
+    .mobilebar{display:none}
+    @media (max-width: 900px){
+      .app{grid-template-columns:1fr}
+      aside{position:fixed;inset:0 30% 0 0;z-index:10;transform:translateX(-100%);transition:.25s transform}
+      aside.open{transform:translateX(0)}
+      .overlay{display:none}
+      .overlay.show{display:block;position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(2px)}
+      .mobilebar{display:flex;gap:8px;position:sticky;top:0;background:rgba(17,24,39,.8);border-bottom:1px solid var(--border);padding:8px}
+    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>CentroNet Analytics</h1>
-  </header>
-
-  <div class="container">
-    <div class="tabs">
-      <button class="tab active" data-target="#bi">Power BI</button>
-      <button class="tab" data-target="#ppt">Presentación</button>
-    </div>
-
-    <section id="bi" class="card">
-      <div class="aspect">
-        <!-- Reemplaza la URL del src por TU iframe público de Power BI (Publish to web) -->
-        <iframe allowfullscreen src=https://app.powerbi.com/view?r=eyJrIjoiMWI3NDRkZmQtNGFlNC00OTYzLTg5YzAtMmQ1MDI0OWIyZWIxIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9></iframe>
+  <div class="app">
+    <aside id="sidebar">
+      <div class="brand">
+        <div class="logo"></div>
+        <h1>CentroNet Analytics</h1>
       </div>
-    </section>
+      <div class="hint">Visor de reportes (solo lectura)</div>
+      <div class="list" id="reportList"></div>
+      <div class="hint">Para agregar o cambiar enlaces, edita el código fuente (array DEFAULT_REPORTS) y publica.</div>
+    </aside>
 
-    <section id="ppt" class="card" style="display:none">
-      <div class="aspect">
-        <!-- Opción A (OneDrive/SharePoint -> Insertar): pega aquí el SRC del iframe que te da PowerPoint en la web -->
-        <iframe allowfullscreen
-        src="https://centronetsas-my.sharepoint.com/personal/bgarcia_centronet_com_co/_layouts/15/Doc.aspx?	sourcedoc={5e857ac4-8026-488c-9fbb-c1c21975e4fc}&amp;action=embedview&amp;wdAr=1.7777777777777777"
-        width="476" height="288" frameborder="0">
-</iframe>
-        <!-- Opción B (Google Slides -> Publicar en la Web): sustituye el iframe por el de Slides -->
-        <!-- Opción C: Exporta a PDF y usa <embed src="ruta/archivo.pdf#view=FitH" type="application/pdf"> -->
+    <div class="overlay" id="overlay"></div>
+
+    <main>
+      <div class="mobilebar">
+        <button class="btn" id="openSidebar">☰ Menú</button>
+        <div class="title">Actual: <span class="current" id="currentTitle">—</span></div>
       </div>
-    </section>
+
+      <header class="top">
+        <div class="title">Actual: <span class="current" id="currentTitleDesktop">—</span></div>
+        <div class="hint">Selecciona un reporte a la izquierda</div>
+      </header>
+
+      <div class="viewer" id="viewer">
+        <div class="empty" id="empty">
+          <div>
+            <div style="font-size:18px;margin-bottom:6px">Selecciona un reporte</div>
+            <div class="hint">Los enlaces están definidos por el administrador en el código.</div>
+          </div>
+        </div>
+        <iframe id="frame" allowfullscreen title="Power BI"></iframe>
+      </div>
+    </main>
   </div>
 
-  <footer>
-    Hecho con ♥. "Without data, you're just another person with an opinion."
-                 -W. Edwards Deming
-  </footer>
-
   <script>
-    // Tabs mínimas sin dependencias
-    const tabs = document.querySelectorAll('.tab');
-    const sections = { '#bi': document.querySelector('#bi'), '#ppt': document.querySelector('#ppt') };
-    tabs.forEach(btn=>btn.addEventListener('click',()=>{
-      tabs.forEach(b=>b.classList.toggle('active', b===btn));
-      Object.values(sections).forEach(s=>s.style.display='none');
-      sections[btn.dataset.target].style.display='block';
-    }));
+    // === SOLO LECTURA ===
+    // Para agregar/editar reportes, modifica este array y publica.
+    // Cada elemento: { id, name, src } donde src = URL "Publicar en la web" de Power BI.
+    const DEFAULT_REPORTS = [
+      {
+        id: 'cn-ejecutivo',
+        name: 'CN · Ejecutivo',
+        src: 'https://app.powerbi.com/view?r=eyJrIjoiMWI3NDRkZmQtNGFlNC00OTYzLTg5YzAtMmQ1MDI0OWIyZWIxIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9'
+      }
+      // Agrega más objetos aquí…
+      // { id:'ventas', name:'Ventas Regional', src:'https://app.powerbi.com/view?r=...' },
+    ];
+
+    const reports = DEFAULT_REPORTS;
+    let selectedId = null;
+
+    function renderList(){
+      const list = document.getElementById('reportList');
+      list.innerHTML = '';
+      reports.forEach(r=>{
+        const item = document.createElement('div');
+        item.className = 'item' + (r.id===selectedId? ' active':'');
+        item.dataset.id = r.id;
+        item.innerHTML = `<div class="dot"></div><div class="name" title="${r.name}">${r.name}</div>`;
+        item.onclick = ()=> selectReport(r.id);
+        list.appendChild(item);
+      });
+    }
+
+    function selectReport(id){
+      const r = reports.find(x=>x.id===id);
+      const frame = document.getElementById('frame');
+      const empty = document.getElementById('empty');
+      const t1 = document.getElementById('currentTitle');
+      const t2 = document.getElementById('currentTitleDesktop');
+      if(!r){ frame.removeAttribute('src'); empty.style.display='grid'; t1.textContent=t2.textContent='—'; return; }
+      selectedId = id;
+      document.querySelectorAll('.item').forEach(n=>n.classList.toggle('active', n.dataset.id===id));
+      frame.src = r.src; empty.style.display='none';
+      t1.textContent = t2.textContent = r.name;
+      // hash para compartir vista actual
+      location.hash = 'r=' + encodeURIComponent(id);
+    }
+
+    // Sidebar móvil
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    const openBtn = document.getElementById('openSidebar');
+    if(openBtn){ openBtn.onclick = ()=>{ sidebar.classList.add('open'); overlay.classList.add('show'); }; }
+    if(overlay){ overlay.onclick = ()=>{ sidebar.classList.remove('open'); overlay.classList.remove('show'); }; }
+
+    // Inicialización
+    renderList();
+    const hashId = new URLSearchParams(location.hash.replace(/^#/,'')).get('r');
+    const firstId = reports[0] && reports[0].id;
+    selectReport(hashId && reports.some(r=>r.id===hashId) ? hashId : firstId);
   </script>
 </body>
 </html>
