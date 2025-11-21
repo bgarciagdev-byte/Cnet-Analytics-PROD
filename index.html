@@ -5,45 +5,171 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CentroNet Analytics · Visor (solo lectura)</title>
   <style>
-    :root{ --bg:#0b1220; --bg-2:#0f172a; --fg:#e2e8f0; --muted:#94a3b8; --accent:#22d3ee; --accent-2:#38bdf8; --border:#1f2937; }
+    :root{
+      --bg:#0b1220;
+      --bg-2:#0f172a;
+      --fg:#e2e8f0;
+      --muted:#94a3b8;
+      --accent:#22d3ee;
+      --accent-2:#38bdf8;
+      --border:#1f2937;
+    }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{margin:0;font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial;background:linear-gradient(180deg,var(--bg),var(--bg-2));color:var(--fg);overflow:hidden;position:relative}
+    body{
+      margin:0;
+      font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial;
+      background:linear-gradient(180deg,var(--bg),var(--bg-2));
+      color:var(--fg);
+      overflow:hidden;
+      position:relative
+    }
 
     /* Imagen de fondo visible en todo el sitio MENOS en el visor principal */
-    .bg{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;opacity:.18;z-index:-1;pointer-events:none}
+    .bg{
+      position:fixed;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      opacity:.18;
+      z-index:-1;
+      pointer-events:none
+    }
 
-    .app{display:grid;grid-template-columns:240px 1fr;height:100vh}
-    .app.collapsed{grid-template-columns:1fr}
-    .app.collapsed aside{display:none}
+    .app{
+      display:grid;
+      grid-template-columns:240px 1fr;
+      height:100vh
+    }
+    .app.collapsed{
+      grid-template-columns:1fr
+    }
+    .app.collapsed aside{
+      display:none
+    }
 
     /* Sidebar */
-    aside{background:rgba(17,24,39,.85);border-right:1px solid var(--border);padding:14px 12px;display:flex;flex-direction:column;gap:12px}
-    .brand{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:12px;background:rgba(34,211,238,.08);border:1px solid var(--border)}
-    .logo{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 6px 24px rgba(34,211,238,.35)}
-    .brand h1{font-size:16px;margin:0}
-    .list{display:flex;flex-direction:column;gap:8px;overflow:auto;padding-right:4px}
-    .rbtn{appearance:none;display:block;width:100%;text-align:left;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:#0b1220;color:var(--fg);cursor:pointer;font-size:14px}
-    .rbtn:hover{border-color:var(--accent)}
-    .rbtn.active{background:linear-gradient(180deg,#0b1220,#102035);border-color:var(--accent)}
+    aside{
+      background:rgba(17,24,39,.85);
+      border-right:1px solid var(--border);
+      padding:14px 12px;
+      display:flex;
+      flex-direction:column;
+      gap:12px
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:6px 8px;
+      border-radius:12px;
+      background:rgba(34,211,238,.08);
+      border:1px solid var(--border)
+    }
+    .logo{
+      width:28px;
+      height:28px;
+      border-radius:8px;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      box-shadow:0 6px 24px rgba(34,211,238,.35)
+    }
+    .brand h1{
+      font-size:16px;
+      margin:0
+    }
+    .list{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      overflow:auto;
+      padding-right:4px
+    }
+    .rbtn{
+      appearance:none;
+      display:block;
+      width:100%;
+      text-align:left;
+      padding:10px 12px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:#0b1220;
+      color:var(--fg);
+      cursor:pointer;
+      font-size:14px
+    }
+    .rbtn:hover{
+      border-color:var(--accent)
+    }
+    .rbtn.active{
+      background:linear-gradient(180deg,#0b1220,#102035);
+      border-color:var(--accent)
+    }
 
     /* Viewer */
     main{position:relative}
-    .viewer{position:relative;width:100%;height:100vh;background:#0b1220} /* fondo sólido para ocultar la imagen en el panel principal */
-    iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:none}
+    .viewer{
+      position:relative;
+      width:100%;
+      height:100vh;
+      background:#0b1220  /* fondo sólido para ocultar la imagen en el panel principal */
+    }
+    iframe{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      border:0;
+      display:none; /* oculto hasta que se seleccione un reporte */
+    }
 
     /* Botón flotante para mostrar menú cuando está colapsado */
-    .fab{position:fixed;top:12px;left:12px;z-index:20;display:none;background:#0b1220;border:1px solid var(--border);color:var(--fg);border-radius:12px;padding:10px 12px;cursor:pointer}
-    .app.collapsed .fab{display:block}
+    .fab{
+      position:fixed;
+      top:12px;
+      left:12px;
+      z-index:20;
+      display:none;
+      background:#0b1220;
+      border:1px solid var(--border);
+      color:var(--fg);
+      border-radius:12px;
+      padding:10px 12px;
+      cursor:pointer
+    }
+    .app.collapsed .fab{
+      display:block
+    }
 
     /* Mobile */
     @media (max-width: 900px){
-      .app{grid-template-columns:1fr}
-      aside{position:fixed;inset:0 35% 0 0;z-index:10;transform:translateX(-100%);transition:.25s transform}
-      aside.open{transform:translateX(0)}
-      .overlay{display:none}
-      .overlay.show{display:block;position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(2px)}
-      .app.collapsed aside{display:block;transform:translateX(-100%)}
+      .app{
+        grid-template-columns:1fr
+      }
+      aside{
+        position:fixed;
+        inset:0 35% 0 0;
+        z-index:10;
+        transform:translateX(-100%);
+        transition:.25s transform
+      }
+      aside.open{
+        transform:translateX(0)
+      }
+      .overlay{
+        display:none
+      }
+      .overlay.show{
+        display:block;
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,.45);
+        backdrop-filter:blur(2px)
+      }
+      .app.collapsed aside{
+        display:block;
+        transform:translateX(-100%)
+      }
     }
   </style>
 </head>
@@ -58,12 +184,14 @@
         <h1>CentroNet Analytics</h1>
       </div>
 
-      <!-- 🔧 BOTONES ESTÁTICOS: edítalos aquí en HTML -->
+      <!-- 🔧 BOTONES ESTÁTICOS: edítalos aquí en HTML.
+           Puedes cambiar texto y data-src por cualquier URL -->
       <div class="list" id="reportList" aria-label="Listado de reportes">
-        <button class="rbtn active" data-src="https://app.powerbi.com/view?r=eyJrIjoiNGU3OWUzMjQtMmM3OS00MDE1LWIzMWEtMzFhNTg5ZGJiZDA3IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">PBI ZEISS</button>
+        <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiNGU3OWUzMjQtMmM3OS00MDE1LWIzMWEtMzFhNTg5ZGJiZDA3IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">PBI ZEISS</button>
         <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiNzQxYmY1M2QtYjg3Yy00NzljLTlhOWYtYTg2N2JlZjRkYjJmIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">PBI QBANO</button>
         <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiZGViZmIyNzctNWQ4My00NTkxLTgxZjAtNjBiNjBiMmI1YzI2IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">PBI ICESI</button>
         <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiNjc3ZTNkMTktZGU5OS00MmEzLWJiNjEtZTIzYjg3Yjk5NDUxIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">PBI FRISBY</button>
+        <!-- Puedes seguir agregando más botones aquí -->
       </div>
     </aside>
 
@@ -78,30 +206,45 @@
   </div>
 
   <script>
-    // === LÓGICA: usa los botones que ya están en el HTML ===
     const app = document.getElementById('app');
     const frame = document.getElementById('frame');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    const menuBtn = document.getElementById('menuBtn');
+    const buttons = Array.from(document.querySelectorAll('.rbtn'));
 
     function selectByButton(btn){
-      document.querySelectorAll('.rbtn').forEach(b=>b.classList.toggle('active', b===btn));
+      // marcar botón activo
+      buttons.forEach(b => b.classList.toggle('active', b === btn));
+
       const src = btn.dataset.src;
-      if(src){ frame.style.display='block'; frame.src = src; app.classList.add('collapsed'); }
-      // hash para compartir vista
-      const textId = btn.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g,'-');
-      location.hash = 'r=' + encodeURIComponent(textId);
+      if (src){
+        frame.style.display = 'block';
+        if (frame.src !== src) frame.src = src;
+        app.classList.add('collapsed'); // colapsa sidebar en pantallas grandes
+      }
     }
 
-    // listeners
-    document.querySelectorAll('.rbtn').forEach(btn=>{
-      btn.addEventListener('click', ()=> selectByButton(btn));
+    // click en botones
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => selectByButton(btn));
     });
 
-    // Botón para mostrar el menú cuando está colapsado
-    document.getElementById('menuBtn').onclick = ()=>{ app.classList.remove('collapsed'); };
+    // botón menú (móvil)
+    menuBtn.onclick = () => {
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('show');
+      app.classList.remove('collapsed');
+    };
 
-    // Inicializa: carga el primero (marcado .active)
-    const first = document.querySelector('.rbtn.active') || document.querySelector('.rbtn');
-    if(first) selectByButton(first);
+    // cerrar al tocar overlay (móvil)
+    overlay.onclick = () => {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('show');
+    };
+
+    // 🔹 IMPORTANTE: ya NO inicializamos ningún reporte.
+    // El iframe queda vacío hasta que el usuario haga clic.
   </script>
 </body>
 </html>
