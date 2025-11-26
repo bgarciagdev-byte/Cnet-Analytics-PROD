@@ -7,25 +7,30 @@
   <style>
     :root{
       --bg:#0b1220;
-      --bg-2:#0f172a;
+      --bg-2:#020617;
       --fg:#e2e8f0;
       --muted:#94a3b8;
       --accent:#22d3ee;
       --accent-2:#38bdf8;
       --border:#1f2937;
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
+
+    *{ box-sizing:border-box; }
+
+    html, body{
+      height:100%;
       margin:0;
+    }
+
+    body{
       font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial;
       background:linear-gradient(180deg,var(--bg),var(--bg-2));
       color:var(--fg);
       overflow:hidden;
-      position:relative
+      position:relative;
     }
 
-    /* Imagen de fondo visible en todo el sitio MENOS en el visor principal */
+    /* Imagen de fondo */
     .bg{
       position:fixed;
       inset:0;
@@ -34,218 +39,226 @@
       object-fit:cover;
       opacity:.18;
       z-index:-1;
-      pointer-events:none
+      pointer-events:none;
     }
 
     .app{
-      display:grid;
-      grid-template-columns:240px 1fr;
-      height:100vh
-    }
-    .app.collapsed{
-      grid-template-columns:1fr
-    }
-    .app.collapsed aside{
-      display:none
+      height:100vh;
+      display:flex;
+      align-items:stretch;
+      justify-content:center;
     }
 
-    /* Sidebar */
-    aside{
-      background:rgba(17,24,39,.85);
-      border-right:1px solid var(--border);
-      padding:14px 12px;
+    main{
+      width:100%;
+      max-width:1200px;
+      padding:16px;
       display:flex;
       flex-direction:column;
-      gap:12px
+      gap:16px;
     }
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding:6px 8px;
-      border-radius:12px;
-      background:rgba(34,211,238,.08);
-      border:1px solid var(--border)
-    }
-    .logo{
-      width:28px;
-      height:28px;
-      border-radius:8px;
-      background:linear-gradient(135deg,var(--accent),var(--accent-2));
-      box-shadow:0 6px 24px rgba(34,211,238,.35)
-    }
-    .brand h1{
-      font-size:16px;
-      margin:0
-    }
-    .list{
+
+    /* MENÚ A PANTALLA COMPLETA (GRID DE BOTONES) */
+    .menu-grid{
+      flex:1;
       display:flex;
       flex-direction:column;
-      gap:8px;
-      overflow:auto;
-      padding-right:4px
+      gap:16px;
     }
+
+    .title{
+      margin:0;
+      font-size:22px;
+      font-weight:600;
+    }
+
+    .subtitle{
+      margin:0;
+      font-size:14px;
+      color:var(--muted);
+    }
+
+    .grid{
+      margin-top:10px;
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
+      gap:12px;
+    }
+
     .rbtn{
       appearance:none;
-      display:block;
-      width:100%;
-      text-align:left;
-      padding:10px 12px;
+      border-radius:14px;
       border:1px solid var(--border);
-      border-radius:12px;
-      background:#0b1220;
+      padding:16px 14px;
+      background:rgba(15,23,42,.9);
       color:var(--fg);
       cursor:pointer;
-      font-size:14px
-    }
-    .rbtn:hover{
-      border-color:var(--accent)
-    }
-    .rbtn.active{
-      background:linear-gradient(180deg,#0b1220,#102035);
-      border-color:var(--accent)
+      font-size:15px;
+      text-align:left;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      transition:.18s transform, .18s box-shadow, .18s border-color, .18s background;
     }
 
-    /* Viewer */
-    main{position:relative}
+    .rbtn span{
+      font-weight:500;
+    }
+
+    .rbtn small{
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .rbtn:hover{
+      transform:translateY(-2px);
+      border-color:var(--accent);
+      box-shadow:0 10px 30px rgba(15,23,42,.6);
+      background:radial-gradient(circle at top,var(--accent-2)15%,#020617 70%);
+    }
+
+    /* VIEWER A PANTALLA COMPLETA */
     .viewer{
       position:relative;
-      width:100%;
-      height:100vh;
-      background:#0b1220  /* fondo sólido para ocultar la imagen en el panel principal */
+      flex:1;
+      border-radius:18px;
+      border:1px solid var(--border);
+      overflow:hidden;
+      background:#020617;
+      display:flex;
+      flex-direction:column;
     }
-    iframe{
-      position:absolute;
-      inset:0;
+
+    .viewer iframe{
+      border:0;
       width:100%;
       height:100%;
-      border:0;
-      display:none; /* oculto hasta que se seleccione un reporte */
     }
 
-    /* Botón flotante para mostrar menú cuando está colapsado */
-    .fab{
-      position:fixed;
-      top:12px;
-      left:12px;
-      z-index:20;
-      display:none;
-      background:#0b1220;
+    .back-btn{
+      position:absolute;
+      top:10px;
+      left:10px;
+      z-index:10;
+      border-radius:999px;
       border:1px solid var(--border);
+      padding:6px 12px;
+      font-size:13px;
+      background:rgba(15,23,42,.9);
       color:var(--fg);
-      border-radius:12px;
-      padding:10px 12px;
-      cursor:pointer
-    }
-    .app.collapsed .fab{
-      display:block
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      gap:6px;
     }
 
-    /* Mobile */
-    @media (max-width: 900px){
-      .app{
-        grid-template-columns:1fr
+    .back-btn:hover{
+      border-color:var(--accent);
+    }
+
+    /* Estados */
+    .hidden{
+      display:none !important;
+    }
+
+    /* Responsive: que todo respire bien en móvil */
+    @media (max-width: 600px){
+      main{
+        padding:10px;
       }
-      aside{
-        position:fixed;
-        inset:0 35% 0 0;
-        z-index:10;
-        transform:translateX(-100%);
-        transition:.25s transform
+      .title{
+        font-size:18px;
       }
-      aside.open{
-        transform:translateX(0)
-      }
-      .overlay{
-        display:none
-      }
-      .overlay.show{
-        display:block;
-        position:fixed;
-        inset:0;
-        background:rgba(0,0,0,.45);
-        backdrop-filter:blur(2px)
-      }
-      .app.collapsed aside{
-        display:block;
-        transform:translateX(-100%)
+      .grid{
+        grid-template-columns:1fr;
       }
     }
   </style>
 </head>
 <body>
-  <!-- 🔧 Cambia la ruta a tu imagen -->
-  <img class="bg" src="assets/BG ANALYTICS.png" alt="CentroNet Analytics" />
+  <img class="bg" src="assets/centronet-hero.jpg" alt="CentroNet Analytics" />
 
   <div class="app" id="app">
-    <aside id="sidebar">
-      <div class="brand">
-        <div class="logo" aria-hidden="true"></div>
-        <h1>CentroNet Analytics</h1>
-      </div>
+    <main id="main">
+      <!-- MENÚ EN GRID OCUPANDO LA PANTALLA -->
+      <section class="menu-grid" id="menu">
+        <div>
+          <h1 class="title">CentroNet Analytics</h1>
+          <p class="subtitle">Selecciona un panel para abrirlo sobre esta misma ventana.</p>
+        </div>
 
-      <!-- 🔧 BOTONES ESTÁTICOS: edítalos aquí en HTML.
-           Puedes cambiar texto y data-src por cualquier URL -->
-      <div class="list" id="reportList" aria-label="Listado de reportes">
-       <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiNGU3OWUzMjQtMmM3OS00MDE1LWIzMWEtMzFhNTg5ZGJiZDA3IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">PBI ZEISS</button>
-        <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiNzQxYmY1M2QtYjg3Yy00NzljLTlhOWYtYTg2N2JlZjRkYjJmIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">PBI QBANO</button>
-        <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiYjg4MDE3MDQtODBhOC00NWI5LWJlM2MtMThlYmMxMTlkYWVjIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">PBI ICESI</button>
-        <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiOTZhZDNiZWItZmI4Mi00ZDYxLWIyNGEtODBlYTM5MzY1MTNkIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">PBI TQ</button>
-        <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiOTZmOGYwYWYtNTNjZi00MGUyLWJiMDMtYWU0Zjc0YjUwY2U3IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">PBI CALZATODO</button>
-        <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiMDE5MjMwZTctM2YzYi00Yzk1LWE0NmUtZTgyNWY2Y2M5Y2Y0IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">PBI CCC</button>
-      </div>
-    </aside>
+        <div class="grid" id="reportList" aria-label="Listado de reportes">
+          <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiNGU3OWUzMjQtMmM3OS00MDE1LWIzMWEtMzFhNTg5ZGJiZDA3IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
+            <span>PBI ZEISS</span>
+            <small>Indicadores de ZEISS</small>
+          </button>
 
-    <div class="overlay" id="overlay"></div>
+          <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiNzQxYmY1M2QtYjg3Yy00NzljLTlhOWYtYTg2N2JlZjRkYjJmIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
+            <span>PBI QBANO</span>
+            <small>Operación y ventas QBANO</small>
+          </button>
 
-    <main>
-      <button class="fab" id="menuBtn" aria-label="Mostrar menú">☰ Menú</button>
-      <div class="viewer" id="viewer">
+          <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiYjg4MDE3MDQtODBhOC00NWI5LWJlM2MtMThlYmMxMTlkYWVjIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
+            <span>PBI ICESI</span>
+            <small>Tablero universidad ICESI</small>
+          </button>
+
+          <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiOTZhZDNiZWItZmI4Mi00ZDYxLWIyNGEtODBlYTM5MzY1MTNkIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
+            <span>PBI TQ</span>
+            <small>Indicadores TQ</small>
+          </button>
+
+          <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiMjU4NDRiYjUtNzgxNC00ZGVmLWFmYTktYzdjZWJjZTgyZTE2IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
+            <span>PBI CALZATODO</span>
+            <small>Panel de Calzatodo</small>
+          </button>
+
+          <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiMDE5MjMwZTctM2YzYi00Yzk1LWE0NmUtZTgyNWY2Y2M5Y2Y0IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
+            <span>PBI CCC</span>
+            <small>Centro Comercial Chipichape</small>
+          </button>
+        </div>
+      </section>
+
+      <!-- VIEWER A PANTALLA COMPLETA (MISMA VENTANA) -->
+      <section class="viewer hidden" id="viewer">
+        <button class="back-btn" id="backBtn">← Volver al menú</button>
         <iframe id="frame" allowfullscreen title="Power BI"></iframe>
-      </div>
+      </section>
     </main>
   </div>
 
   <script>
-    const app = document.getElementById('app');
+    const menu = document.getElementById('menu');
+    const viewer = document.getElementById('viewer');
     const frame = document.getElementById('frame');
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('overlay');
-    const menuBtn = document.getElementById('menuBtn');
+    const backBtn = document.getElementById('backBtn');
     const buttons = Array.from(document.querySelectorAll('.rbtn'));
 
-    function selectByButton(btn){
-      // marcar botón activo
-      buttons.forEach(b => b.classList.toggle('active', b === btn));
-
+    function openReport(btn){
       const src = btn.dataset.src;
-      if (src){
-        frame.style.display = 'block';
-        if (frame.src !== src) frame.src = src;
-        app.classList.add('collapsed'); // colapsa sidebar en pantallas grandes
+      if(!src) return;
+
+      // cargar reporte en el iframe
+      if(frame.src !== src){
+        frame.src = src;
       }
+
+      // ocultar menú (grid) y mostrar visor a pantalla completa
+      menu.classList.add('hidden');
+      viewer.classList.remove('hidden');
     }
 
-    // click en botones
+    // Click en botones → abre el reporte en la misma ventana
     buttons.forEach(btn => {
-      btn.addEventListener('click', () => selectByButton(btn));
+      btn.addEventListener('click', () => openReport(btn));
     });
 
-    // botón menú (móvil)
-    menuBtn.onclick = () => {
-      sidebar.classList.toggle('open');
-      overlay.classList.toggle('show');
-      app.classList.remove('collapsed');
-    };
-
-    // cerrar al tocar overlay (móvil)
-    overlay.onclick = () => {
-      sidebar.classList.remove('open');
-      overlay.classList.remove('show');
-    };
-
-    // 🔹 IMPORTANTE: ya NO inicializamos ningún reporte.
-    // El iframe queda vacío hasta que el usuario haga clic.
+    // Botón volver → regresa al grid de botones
+    backBtn.addEventListener('click', () => {
+      viewer.classList.add('hidden');
+      menu.classList.remove('hidden');
+    });
   </script>
 </body>
 </html>
