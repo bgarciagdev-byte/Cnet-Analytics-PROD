@@ -22,10 +22,10 @@
       background:linear-gradient(180deg,var(--bg),var(--bg-2));
       color:var(--fg);
       overflow:hidden;
-      position:relative;
+      position:relative
     }
 
-    /* Imagen de fondo */
+    /* Imagen de fondo visible en todo el sitio MENOS en el visor principal */
     .bg{
       position:fixed;
       inset:0;
@@ -34,13 +34,19 @@
       object-fit:cover;
       opacity:.18;
       z-index:-1;
-      pointer-events:none;
+      pointer-events:none
     }
 
     .app{
       display:grid;
       grid-template-columns:240px 1fr;
-      height:100vh;
+      height:100vh
+    }
+    .app.collapsed{
+      grid-template-columns:1fr
+    }
+    .app.collapsed aside{
+      display:none
     }
 
     /* Sidebar */
@@ -50,7 +56,7 @@
       padding:14px 12px;
       display:flex;
       flex-direction:column;
-      gap:12px;
+      gap:12px
     }
     .brand{
       display:flex;
@@ -59,25 +65,25 @@
       padding:6px 8px;
       border-radius:12px;
       background:rgba(34,211,238,.08);
-      border:1px solid var(--border);
+      border:1px solid var(--border)
     }
     .logo{
       width:28px;
       height:28px;
       border-radius:8px;
       background:linear-gradient(135deg,var(--accent),var(--accent-2));
-      box-shadow:0 6px 24px rgba(34,211,238,.35);
+      box-shadow:0 6px 24px rgba(34,211,238,.35)
     }
     .brand h1{
       font-size:16px;
-      margin:0;
+      margin:0
     }
     .list{
       display:flex;
       flex-direction:column;
       gap:8px;
       overflow:auto;
-      padding-right:4px;
+      padding-right:4px
     }
     .rbtn{
       appearance:none;
@@ -90,82 +96,85 @@
       background:#0b1220;
       color:var(--fg);
       cursor:pointer;
-      font-size:14px;
+      font-size:14px
     }
     .rbtn:hover{
-      border-color:var(--accent);
+      border-color:var(--accent)
+    }
+    .rbtn.active{
+      background:linear-gradient(180deg,#0b1220,#102035);
+      border-color:var(--accent)
     }
 
-    /* Panel derecho (sin iframe, solo mensaje) */
-    main{
-      position:relative;
-    }
+    /* Viewer */
+    main{position:relative}
     .viewer{
       position:relative;
       width:100%;
       height:100vh;
-      background:#0b1220;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-      padding:16px;
+      background:#0b1220  /* fondo sólido para ocultar la imagen en el panel principal */
     }
-    .viewer p{
-      max-width:420px;
-      color:var(--muted);
-      font-size:15px;
+    iframe{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      border:0;
+      display:none; /* oculto hasta que se seleccione un reporte */
+    }
+
+    /* Botón flotante para mostrar menú cuando está colapsado */
+    .fab{
+      position:fixed;
+      top:12px;
+      left:12px;
+      z-index:20;
+      display:none;
+      background:#0b1220;
+      border:1px solid var(--border);
+      color:var(--fg);
+      border-radius:12px;
+      padding:10px 12px;
+      cursor:pointer
+    }
+    .app.collapsed .fab{
+      display:block
     }
 
     /* Mobile */
     @media (max-width: 900px){
       .app{
-        grid-template-columns:1fr;
+        grid-template-columns:1fr
       }
       aside{
         position:fixed;
         inset:0 35% 0 0;
         z-index:10;
         transform:translateX(-100%);
-        transition:.25s transform;
+        transition:.25s transform
       }
       aside.open{
-        transform:translateX(0);
+        transform:translateX(0)
       }
       .overlay{
-        display:none;
+        display:none
       }
       .overlay.show{
         display:block;
         position:fixed;
         inset:0;
         background:rgba(0,0,0,.45);
-        backdrop-filter:blur(2px);
+        backdrop-filter:blur(2px)
       }
-
-      /* Botón flotante menú */
-      .fab{
-        position:fixed;
-        top:12px;
-        left:12px;
-        z-index:20;
+      .app.collapsed aside{
         display:block;
-        background:#0b1220;
-        border:1px solid var(--border);
-        color:var(--fg);
-        border-radius:12px;
-        padding:10px 12px;
-        cursor:pointer;
+        transform:translateX(-100%)
       }
-    }
-
-    /* Desktop: ocultar fab */
-    .fab{
-      display:none;
     }
   </style>
 </head>
 <body>
+  <!-- 🔧 Cambia la ruta a tu imagen -->
   <img class="bg" src="assets/centronet-hero.jpg" alt="CentroNet Analytics" />
 
   <div class="app" id="app">
@@ -175,8 +184,10 @@
         <h1>CentroNet Analytics</h1>
       </div>
 
+      <!-- 🔧 BOTONES ESTÁTICOS: edítalos aquí en HTML.
+           Puedes cambiar texto y data-src por cualquier URL -->
       <div class="list" id="reportList" aria-label="Listado de reportes">
-        <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiNGU3OWUzMjQtMmM3OS00MDE1LWIzMWEtMzFhNTg5ZGJiZDA3IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">PBI ZEISS</button>
+       <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiNGU3OWUzMjQtMmM3OS00MDE1LWIzMWEtMzFhNTg5ZGJiZDA3IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">PBI ZEISS</button>
         <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiNzQxYmY1M2QtYjg3Yy00NzljLTlhOWYtYTg2N2JlZjRkYjJmIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">PBI QBANO</button>
         <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiYjg4MDE3MDQtODBhOC00NWI5LWJlM2MtMThlYmMxMTlkYWVjIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">PBI ICESI</button>
         <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiOTZhZDNiZWItZmI4Mi00ZDYxLWIyNGEtODBlYTM5MzY1MTNkIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">PBI TQ</button>
@@ -190,42 +201,51 @@
     <main>
       <button class="fab" id="menuBtn" aria-label="Mostrar menú">☰ Menú</button>
       <div class="viewer" id="viewer">
-        <p>
-          Selecciona un reporte en el panel izquierdo.<br>
-          Se abrirá en una nueva pestaña de Power BI, sin vista previa dentro de esta página.
-        </p>
+        <iframe id="frame" allowfullscreen title="Power BI"></iframe>
       </div>
     </main>
   </div>
 
   <script>
+    const app = document.getElementById('app');
+    const frame = document.getElementById('frame');
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('overlay');
     const menuBtn = document.getElementById('menuBtn');
     const buttons = Array.from(document.querySelectorAll('.rbtn'));
 
-    // Al hacer clic en un botón: abrir el reporte en otra pestaña (sin iframe)
-    buttons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const src = btn.dataset.src;
-        if (src) {
-          window.open(src, '_blank'); // nueva pestaña
-        }
-      });
-    });
+    function selectByButton(btn){
+      // marcar botón activo
+      buttons.forEach(b => b.classList.toggle('active', b === btn));
 
-    // Menú móvil
-    if (menuBtn) {
-      menuBtn.onclick = () => {
-        sidebar.classList.toggle('open');
-        overlay.classList.toggle('show');
-      };
+      const src = btn.dataset.src;
+      if (src){
+        frame.style.display = 'block';
+        if (frame.src !== src) frame.src = src;
+        app.classList.add('collapsed'); // colapsa sidebar en pantallas grandes
+      }
     }
 
+    // click en botones
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => selectByButton(btn));
+    });
+
+    // botón menú (móvil)
+    menuBtn.onclick = () => {
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('show');
+      app.classList.remove('collapsed');
+    };
+
+    // cerrar al tocar overlay (móvil)
     overlay.onclick = () => {
       sidebar.classList.remove('open');
       overlay.classList.remove('show');
     };
+
+    // 🔹 IMPORTANTE: ya NO inicializamos ningún reporte.
+    // El iframe queda vacío hasta que el usuario haga clic.
   </script>
 </body>
 </html>
