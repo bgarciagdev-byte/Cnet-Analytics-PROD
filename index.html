@@ -56,9 +56,17 @@
       flex-direction:column;
       gap:16px;
 
-      /* ✅ NUEVO: permitir scroll si agregas contenido abajo */
+      /* ✅ Scroll solo aquí */
       overflow:auto;
       padding-bottom:24px;
+
+      /* ✅ Ocultar scrollbar visual (sin desactivar scroll) */
+      scrollbar-width:none;          /* Firefox */
+      -ms-overflow-style:none;       /* IE/Edge viejo */
+    }
+    main::-webkit-scrollbar{         /* Chrome/Safari */
+      width:0;
+      height:0;
     }
 
     .menu-grid{
@@ -80,7 +88,6 @@
       color:var(--muted);
     }
 
-    /* bloques de sección */
     .section{
       border:1px solid var(--border);
       border-radius:18px;
@@ -183,7 +190,7 @@
 
     .hidden{ display:none !important; }
 
-    /* ✅ NUEVO: Paneles inferiores 50/50 */
+    /* Paneles inferiores 50/50 */
     .bottom-panels{
       display:grid;
       grid-template-columns: 1fr 1fr;
@@ -198,17 +205,25 @@
       min-height:260px;
     }
 
-    /* ✅ NUEVO: Tabla accesos */
+    /* Tabla accesos */
     .table-wrap{
       overflow:auto;
       border:1px solid var(--border);
       border-radius:14px;
+
+      /* Ocultar scrollbar en la tabla también */
+      scrollbar-width:none;
+      -ms-overflow-style:none;
+    }
+    .table-wrap::-webkit-scrollbar{
+      width:0;
+      height:0;
     }
 
     .access-table{
       width:100%;
       border-collapse:collapse;
-      min-width:520px;
+      min-width:620px;
     }
 
     .access-table th,
@@ -217,6 +232,7 @@
       border-bottom:1px solid rgba(31,41,55,.8);
       text-align:left;
       font-size:13px;
+      vertical-align:middle;
     }
 
     .access-table th{
@@ -225,6 +241,7 @@
       background:rgba(15,23,42,.65);
       position:sticky;
       top:0;
+      z-index:1;
     }
 
     .access-table td{ color:var(--fg); }
@@ -245,6 +262,17 @@
     }
 
     .open-link:hover{ border-color:var(--accent); }
+
+    /* Fila separadora/grupo */
+    .group-row td{
+      background:rgba(15,23,42,.65);
+      color:var(--muted);
+      font-weight:600;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+      font-size:11px;
+      border-bottom:1px solid rgba(31,41,55,.9);
+    }
 
     @media (max-width: 900px){
       .bottom-panels{ grid-template-columns: 1fr; }
@@ -273,7 +301,7 @@
         <!-- ✅ SECCIÓN 1: CLIENTES -->
         <div class="section">
           <div class="section-header">
-            <h2 class="section-title">CLIENTES CENTRONET</h2>
+            <h2 class="section-title">Clientes CentroNet</h2>
             <p class="section-desc">Reportes compartidos con clientes</p>
           </div>
 
@@ -303,7 +331,7 @@
               <small>Calzatodo</small>
             </button>
 
-            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiMDE5MjMwZTctM2YzYi00Yzk1LWE0NmUtZTgyNWY2Y2M5Y2Y0IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
+            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiMDE5MjMwZTctY2YzYi00Yzk1LWE0NmUtZTgyNWY2Y2M5Y2Y0IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
               <span>PBI CCC</span>
               <small>Cámara de Comercio de Cali</small>
             </button>
@@ -355,25 +383,26 @@
           </div>
         </div>
 
-        <!-- ✅ NUEVO: 2 PANELes inferiores -->
+        <!-- ✅ 2 PANELes inferiores -->
         <div class="bottom-panels">
-          <!-- IZQUIERDA: Tabla de accesos -->
+          <!-- IZQUIERDA: Tabla de accesos (Clientes + Internos) -->
           <div class="panel">
             <div class="section-header" style="margin-bottom:10px;">
-              <h2 class="section-title">Accesos de Clientes</h2>
-              <p class="section-desc">Tabla con links directos</p>
+              <h2 class="section-title">Accesos</h2>
+              <p class="section-desc">Clientes e internos (links directos)</p>
             </div>
 
             <div class="table-wrap">
-              <table class="access-table" aria-label="Tabla de accesos de clientes">
+              <table class="access-table" aria-label="Tabla de accesos">
                 <thead>
                   <tr>
-                    <th style="width:40%;">Cliente</th>
-                    <th style="width:40%;">Descripción</th>
+                    <th style="width:20%;">Tipo</th>
+                    <th style="width:30%;">Panel</th>
+                    <th style="width:30%;">Descripción</th>
                     <th style="width:20%;">Acción</th>
                   </tr>
                 </thead>
-                <tbody id="clientsTableBody">
+                <tbody id="accessTableBody">
                   <!-- Se llena con JS -->
                 </tbody>
               </table>
@@ -433,59 +462,83 @@
       menu.classList.remove('hidden');
     });
 
-    // ✅ Construir tabla de clientes (desde los botones del bloque "Reportes de clientes")
-    const clientsTableBody = document.getElementById('clientsTableBody');
+    // ✅ Construir tabla de accesos (Clientes + Internos)
+    const accessTableBody = document.getElementById('accessTableBody');
 
-    const clientesSectionGrid = document.querySelector('.grid[aria-label="Reportes de clientes"]');
-    const clientButtons = clientesSectionGrid ? Array.from(clientesSectionGrid.querySelectorAll('.rbtn')) : [];
+    const clientesGrid = document.querySelector('.grid[aria-label="Reportes de clientes"]');
+    const internosGrid = document.querySelector('.grid[aria-label="Reportes internos"]');
 
-    function buildClientsTable(){
-      if(!clientsTableBody) return;
-      clientsTableBody.innerHTML = "";
+    const clientButtons = clientesGrid ? Array.from(clientesGrid.querySelectorAll('.rbtn')) : [];
+    const internalButtons = internosGrid ? Array.from(internosGrid.querySelectorAll('.rbtn')) : [];
 
-      clientButtons.forEach((btn) => {
-        const title = btn.querySelector('span')?.textContent?.trim() || "Cliente";
-        const desc  = btn.querySelector('small')?.textContent?.trim() || "";
-        const src   = btn.dataset.src;
-
-        const tr = document.createElement('tr');
-
-        const td1 = document.createElement('td');
-        td1.textContent = title;
-
-        const td2 = document.createElement('td');
-        td2.textContent = desc;
-
-        const td3 = document.createElement('td');
-
-        // Botón que abre en el iframe
-        const openBtn = document.createElement('button');
-        openBtn.className = "open-link";
-        openBtn.textContent = "Abrir";
-        openBtn.addEventListener('click', () => openReport(btn));
-
-        // Link externo
-        const a = document.createElement('a');
-        a.href = src;
-        a.target = "_blank";
-        a.rel = "noopener noreferrer";
-        a.textContent = "Link";
-        a.style.marginLeft = "10px";
-        a.style.fontSize = "12px";
-
-        td3.appendChild(openBtn);
-        td3.appendChild(a);
-
-        tr.appendChild(td1);
-        tr.appendChild(td2);
-        tr.appendChild(td3);
-
-        clientsTableBody.appendChild(tr);
-      });
+    function addGroupRow(label){
+      const tr = document.createElement('tr');
+      tr.className = 'group-row';
+      const td = document.createElement('td');
+      td.colSpan = 4;
+      td.textContent = label;
+      tr.appendChild(td);
+      accessTableBody.appendChild(tr);
     }
 
-    buildClientsTable();
+    function addRow(tipo, btn){
+      const title = btn.querySelector('span')?.textContent?.trim() || "Panel";
+      const desc  = btn.querySelector('small')?.textContent?.trim() || "";
+      const src   = btn.dataset.src;
+
+      const tr = document.createElement('tr');
+
+      const tdTipo = document.createElement('td');
+      tdTipo.textContent = tipo;
+
+      const tdPanel = document.createElement('td');
+      tdPanel.textContent = title;
+
+      const tdDesc = document.createElement('td');
+      tdDesc.textContent = desc;
+
+      const tdAccion = document.createElement('td');
+
+      const openBtn = document.createElement('button');
+      openBtn.className = "open-link";
+      openBtn.textContent = "Abrir";
+      openBtn.addEventListener('click', () => openReport(btn));
+
+      const a = document.createElement('a');
+      a.href = src;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.textContent = "Link";
+      a.style.marginLeft = "10px";
+      a.style.fontSize = "12px";
+
+      tdAccion.appendChild(openBtn);
+      tdAccion.appendChild(a);
+
+      tr.appendChild(tdTipo);
+      tr.appendChild(tdPanel);
+      tr.appendChild(tdDesc);
+      tr.appendChild(tdAccion);
+
+      accessTableBody.appendChild(tr);
+    }
+
+    function buildAccessTable(){
+      if(!accessTableBody) return;
+      accessTableBody.innerHTML = "";
+
+      if(clientButtons.length){
+        addGroupRow("Clientes CentroNet");
+        clientButtons.forEach(btn => addRow("Cliente", btn));
+      }
+
+      if(internalButtons.length){
+        addGroupRow("CentroNet (Interno)");
+        internalButtons.forEach(btn => addRow("Interno", btn));
+      }
+    }
+
+    buildAccessTable();
   </script>
 </body>
 </html>
-
