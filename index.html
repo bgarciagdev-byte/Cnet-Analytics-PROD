@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CentroNet Analytics · Visor (solo lectura)</title>
+  <title>CentroNet Analytics</title>
   <style>
     :root{
       --bg:#0b1220;
@@ -30,7 +30,6 @@
       position:relative;
     }
 
-    /* Imagen de fondo */
     .bg{
       position:fixed;
       inset:0;
@@ -58,7 +57,6 @@
       gap:16px;
     }
 
-    /* MENÚ A PANTALLA COMPLETA (GRID DE BOTONES) */
     .menu-grid{
       flex:1;
       display:flex;
@@ -78,8 +76,35 @@
       color:var(--muted);
     }
 
+    /* NUEVO: bloques de sección */
+    .section{
+      border:1px solid var(--border);
+      border-radius:18px;
+      background:rgba(2,6,23,.55);
+      padding:14px;
+    }
+
+    .section-header{
+      display:flex;
+      align-items:baseline;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:10px;
+    }
+
+    .section-title{
+      margin:0;
+      font-size:16px;
+      font-weight:600;
+    }
+
+    .section-desc{
+      margin:0;
+      font-size:12px;
+      color:var(--muted);
+    }
+
     .grid{
-      margin-top:10px;
       display:grid;
       grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
       gap:12px;
@@ -101,9 +126,7 @@
       transition:.18s transform, .18s box-shadow, .18s border-color, .18s background;
     }
 
-    .rbtn span{
-      font-weight:500;
-    }
+    .rbtn span{ font-weight:500; }
 
     .rbtn small{
       font-size:12px;
@@ -117,7 +140,6 @@
       background:radial-gradient(circle at top,var(--accent-2)15%,#020617 70%);
     }
 
-    /* VIEWER A PANTALLA COMPLETA */
     .viewer{
       position:relative;
       flex:1;
@@ -152,26 +174,15 @@
       gap:6px;
     }
 
-    .back-btn:hover{
-      border-color:var(--accent);
-    }
+    .back-btn:hover{ border-color:var(--accent); }
 
-    /* Estados */
-    .hidden{
-      display:none !important;
-    }
+    .hidden{ display:none !important; }
 
-    /* Responsive: que todo respire bien en móvil */
     @media (max-width: 600px){
-      main{
-        padding:10px;
-      }
-      .title{
-        font-size:18px;
-      }
-      .grid{
-        grid-template-columns:1fr;
-      }
+      main{ padding:10px; }
+      .title{ font-size:18px; }
+      .grid{ grid-template-columns:1fr; }
+      .section-header{ flex-direction:column; align-items:flex-start; }
     }
   </style>
 </head>
@@ -180,47 +191,74 @@
 
   <div class="app" id="app">
     <main id="main">
-      <!-- MENÚ EN GRID OCUPANDO LA PANTALLA -->
       <section class="menu-grid" id="menu">
         <div>
-          <h1 class="title">CentroNet Analytics</h1>
+          <h1 class="title">CENTRONET ANALYTICS</h1>
           <p class="subtitle">Selecciona un panel para abrir</p>
         </div>
 
-        <div class="grid" id="reportList" aria-label="Listado de reportes">
-          <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiNGU3OWUzMjQtMmM3OS00MDE1LWIzMWEtMzFhNTg5ZGJiZDA3IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
-            <span>PBI ZEISS</span>
-            <small>Optica ZEISS</small>
-          </button>
+        <!-- ✅ SECCIÓN 1: CLIENTES -->
+        <div class="section">
+          <div class="section-header">
+            <h2 class="section-title">Clientes CentroNet</h2>
+            <p class="section-desc">Reportes compartidos con clientes</p>
+          </div>
 
-          <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiNzQxYmY1M2QtYjg3Yy00NzljLTlhOWYtYTg2N2JlZjRkYjJmIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
-            <span>PBI QBANO</span>
-            <small>QBANO</small>
-          </button>
+          <div class="grid" aria-label="Reportes de clientes">
+            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiNGU3OWUzMjQtMmM3OS00MDE1LWIzMWEtMzFhNTg5ZGJiZDA3IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
+              <span>PBI ZEISS</span>
+              <small>Óptica ZEISS</small>
+            </button>
 
-          <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiYjg4MDE3MDQtODBhOC00NWI5LWJlM2MtMThlYmMxMTlkYWVjIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
-            <span>PBI ICESI</span>
-            <small>Universidad ICESI</small>
-          </button>
+            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiNzQxYmY1M2QtYjg3Yy00NzljLTlhOWYtYTg2N2JlZjRkYjJmIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
+              <span>PBI QBANO</span>
+              <small>QBANO</small>
+            </button>
 
-          <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiOTZhZDNiZWItZmI4Mi00ZDYxLWIyNGEtODBlYTM5MzY1MTNkIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
-            <span>PBI TQ</span>
-            <small>Tecnoquimicas</small>
-          </button>
+            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiYjg4MDE3MDQtODBhOC00NWI5LWJlM2MtMThlYmMxMTlkYWVjIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
+              <span>PBI ICESI</span>
+              <small>Universidad ICESI</small>
+            </button>
 
-          <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiOTZmOGYwYWYtNTNjZi00MGUyLWJiMDMtYWU0Zjc0YjUwY2U3IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
-            <span>PBI CALZATODO</span>
-            <small>Calzatodo</small>
-          </button>
+            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiOTZhZDNiZWItZmI4Mi00ZDYxLWIyNGEtODBlYTM5MzY1MTNkIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
+              <span>PBI TQ</span>
+              <small>Tecnoquímicas</small>
+            </button>
 
-          <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiMDE5MjMwZTctM2YzYi00Yzk1LWE0NmUtZTgyNWY2Y2M5Y2Y0IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
-            <span>PBI CCC</span>
-            <small>Camara de comercio de Cali</small>
-          </button>
+            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiOTZmOGYwYWYtNTNjZi00MGUyLWJiMDMtYWU0Zjc0YjUwY2U3IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
+              <span>PBI CALZATODO</span>
+              <small>Calzatodo</small>
+            </button>
+
+            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiMDE5MjMwZTctM2YzYi00Yzk1LWE0NmUtZTgyNWY2Y2M5Y2Y0IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
+              <span>PBI CCC</span>
+              <small>Cámara de Comercio de Cali</small>
+            </button>
+          </div>
+        </div>
+
+        <!-- ✅ SECCIÓN 2: INTERNOS -->
+        <div class="section">
+          <div class="section-header">
+            <h2 class="section-title">CENTRONET</h2>
+            <p class="section-desc">Dashboards de uso interno</p>
+          </div>
+
+          <div class="grid" aria-label="Reportes internos">
+            <!-- Ejemplos (cámbialos por tus links internos) -->
+            <button class="rbtn" data-src="https://app.powerbi.com/view?r=TU_LINK_INTERNO_1">
+              <span>PBI Operación Interna</span>
+              <small>Monitoreo / KPIs internos</small>
+            </button>
+
+            <button class="rbtn" data-src="https://app.powerbi.com/view?r=TU_LINK_INTERNO_2">
+              <span>PBI Calidad de Datos</span>
+              <small>Validaciones / anomalías</small>
+            </button>
+          </div>
         </div>
       </section>
 
-      <!-- VIEWER A PANTALLA COMPLETA (MISMA VENTANA) -->
       <section class="viewer hidden" id="viewer">
         <button class="back-btn" id="backBtn">← Volver al menú</button>
         <iframe id="frame" allowfullscreen title="Power BI"></iframe>
@@ -239,22 +277,18 @@
       const src = btn.dataset.src;
       if(!src) return;
 
-      // cargar reporte en el iframe
       if(frame.src !== src){
         frame.src = src;
       }
 
-      // ocultar menú (grid) y mostrar visor a pantalla completa
       menu.classList.add('hidden');
       viewer.classList.remove('hidden');
     }
 
-    // Click en botones → abre el reporte en la misma ventana
     buttons.forEach(btn => {
       btn.addEventListener('click', () => openReport(btn));
     });
 
-    // Botón volver → regresa al grid de botones
     backBtn.addEventListener('click', () => {
       viewer.classList.add('hidden');
       menu.classList.remove('hidden');
