@@ -1,3 +1,4 @@
+```html
 <!doctype html>
 <html lang="es">
 <head>
@@ -55,6 +56,10 @@
       display:flex;
       flex-direction:column;
       gap:16px;
+
+      /* ✅ NUEVO: permitir scroll si agregas contenido abajo */
+      overflow:auto;
+      padding-bottom:24px;
     }
 
     .menu-grid{
@@ -76,7 +81,7 @@
       color:var(--muted);
     }
 
-    /* NUEVO: bloques de sección */
+    /* bloques de sección */
     .section{
       border:1px solid var(--border);
       border-radius:18px;
@@ -149,6 +154,7 @@
       background:#020617;
       display:flex;
       flex-direction:column;
+      height: calc(100vh - 32px);
     }
 
     .viewer iframe{
@@ -177,6 +183,74 @@
     .back-btn:hover{ border-color:var(--accent); }
 
     .hidden{ display:none !important; }
+
+    /* ✅ NUEVO: Paneles inferiores 50/50 */
+    .bottom-panels{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:16px;
+    }
+
+    .panel{
+      border:1px solid var(--border);
+      border-radius:18px;
+      background:rgba(2,6,23,.55);
+      padding:14px;
+      min-height:260px;
+    }
+
+    /* ✅ NUEVO: Tabla accesos */
+    .table-wrap{
+      overflow:auto;
+      border:1px solid var(--border);
+      border-radius:14px;
+    }
+
+    .access-table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:520px;
+    }
+
+    .access-table th,
+    .access-table td{
+      padding:10px 12px;
+      border-bottom:1px solid rgba(31,41,55,.8);
+      text-align:left;
+      font-size:13px;
+    }
+
+    .access-table th{
+      color:var(--muted);
+      font-weight:600;
+      background:rgba(15,23,42,.65);
+      position:sticky;
+      top:0;
+    }
+
+    .access-table td{ color:var(--fg); }
+
+    .access-table a{
+      color:var(--accent-2);
+      text-decoration:none;
+    }
+
+    .open-link{
+      border-radius:999px;
+      border:1px solid var(--border);
+      padding:6px 10px;
+      font-size:12px;
+      background:rgba(15,23,42,.9);
+      color:var(--fg);
+      cursor:pointer;
+    }
+
+    .open-link:hover{ border-color:var(--accent); }
+
+    @media (max-width: 900px){
+      .bottom-panels{ grid-template-columns: 1fr; }
+      .access-table{ min-width:0; }
+    }
 
     @media (max-width: 600px){
       main{ padding:10px; }
@@ -234,22 +308,22 @@
               <span>PBI CCC</span>
               <small>Cámara de Comercio de Cali</small>
             </button>
-            
+
             <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiYjlkY2U4OTEtZDAwYS00MWE2LWFhMjEtZDk5ZGQ0OGI2ODRmIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
               <span>PACIFIC CENTER</span>
               <small>Pacific Center</small>
             </button>
-            
+
             <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiNjc3ZTNkMTktZGU5OS00MmEzLWJiNjEtZTIzYjg3Yjk5NDUxIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
               <span>PBI FRISBY</span>
               <small>Frisby</small>
             </button>
-            
+
             <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiYmQ0NGM4MTUtMWZiMS00NmFiLTg3ODktMWU2ZmNiMGE2ZDVhIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
               <span>PBI JARAMILLO MORA</span>
               <small>Jaramillo Mora</small>
             </button>
-                        
+
             <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiMTIyZmJhNmItODgyZS00NDUyLWJhZGMtYTlkMzFlYTgxZmU3IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
               <span>PBI MALL PLAZA</span>
               <small>Centro comercial MallPlaza</small>
@@ -265,7 +339,6 @@
           </div>
 
           <div class="grid" aria-label="Reportes internos">
-            <!-- Ejemplos (cámbialos por tus links internos) -->
             <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiMjc5ODgyOTAtY2ZlNC00MTZiLWFmZTAtOTU1YjViM2RjMDdjIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
               <span>PBI VENTAS</span>
               <small>Ventas CENTRONET</small>
@@ -275,15 +348,55 @@
               <span>PBI CARTERA</span>
               <small>Cartera CENTRONET</small>
             </button>
-            
+
             <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiNzM4NjBkMTUtM2IxNi00NWVmLWI1OGUtNWRhMjVhOGIzNGRlIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
               <span>PBI INVENTARIO</span>
               <small>Inventario CENTRONET</small>
             </button>
           </div>
         </div>
+
+        <!-- ✅ NUEVO: 2 PANELes inferiores -->
+        <div class="bottom-panels">
+          <!-- IZQUIERDA: Tabla de accesos -->
+          <div class="panel">
+            <div class="section-header" style="margin-bottom:10px;">
+              <h2 class="section-title">Accesos de Clientes</h2>
+              <p class="section-desc">Tabla con links directos</p>
+            </div>
+
+            <div class="table-wrap">
+              <table class="access-table" aria-label="Tabla de accesos de clientes">
+                <thead>
+                  <tr>
+                    <th style="width:40%;">Cliente</th>
+                    <th style="width:40%;">Descripción</th>
+                    <th style="width:20%;">Acción</th>
+                  </tr>
+                </thead>
+                <tbody id="clientsTableBody">
+                  <!-- Se llena con JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- DERECHA: Reservado -->
+          <div class="panel">
+            <div class="section-header" style="margin-bottom:10px;">
+              <h2 class="section-title">Indicadores internos</h2>
+              <p class="section-desc">Conexión a Access / gráficas (pendiente)</p>
+            </div>
+
+            <p class="subtitle" style="margin-top:0;">
+              Aquí iremos con la conexión a Access y las visualizaciones.
+            </p>
+          </div>
+        </div>
+
       </section>
 
+      <!-- VIEWER -->
       <section class="viewer hidden" id="viewer">
         <button class="back-btn" id="backBtn">← Volver al menú</button>
         <iframe id="frame" allowfullscreen title="Power BI"></iframe>
@@ -310,14 +423,70 @@
       viewer.classList.remove('hidden');
     }
 
+    // Click en botones → abre el reporte en la misma ventana
     buttons.forEach(btn => {
       btn.addEventListener('click', () => openReport(btn));
     });
 
+    // Botón volver → regresa al grid de botones
     backBtn.addEventListener('click', () => {
       viewer.classList.add('hidden');
       menu.classList.remove('hidden');
     });
+
+    // ✅ Construir tabla de clientes (desde los botones del bloque "Reportes de clientes")
+    const clientsTableBody = document.getElementById('clientsTableBody');
+
+    const clientesSectionGrid = document.querySelector('.grid[aria-label="Reportes de clientes"]');
+    const clientButtons = clientesSectionGrid ? Array.from(clientesSectionGrid.querySelectorAll('.rbtn')) : [];
+
+    function buildClientsTable(){
+      if(!clientsTableBody) return;
+      clientsTableBody.innerHTML = "";
+
+      clientButtons.forEach((btn) => {
+        const title = btn.querySelector('span')?.textContent?.trim() || "Cliente";
+        const desc  = btn.querySelector('small')?.textContent?.trim() || "";
+        const src   = btn.dataset.src;
+
+        const tr = document.createElement('tr');
+
+        const td1 = document.createElement('td');
+        td1.textContent = title;
+
+        const td2 = document.createElement('td');
+        td2.textContent = desc;
+
+        const td3 = document.createElement('td');
+
+        // Botón que abre en el iframe
+        const openBtn = document.createElement('button');
+        openBtn.className = "open-link";
+        openBtn.textContent = "Abrir";
+        openBtn.addEventListener('click', () => openReport(btn));
+
+        // Link externo
+        const a = document.createElement('a');
+        a.href = src;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.textContent = "Link";
+        a.style.marginLeft = "10px";
+        a.style.fontSize = "12px";
+
+        td3.appendChild(openBtn);
+        td3.appendChild(a);
+
+        tr.appendChild(td1);
+        tr.appendChild(td2);
+        tr.appendChild(td3);
+
+        clientsTableBody.appendChild(tr);
+      });
+    }
+
+    buildClientsTable();
   </script>
 </body>
 </html>
+```
