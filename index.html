@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="es">
 <head>
@@ -5,8 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CentroNet Analytics</title>
 
-  <!-- ✅ Favicon (icono en la pestaña del navegador) -->
-  <!-- Usa un SVG inline como favicon (cohete 🚀). Compatible con navegadores modernos -->
+  <!-- ✅ Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- ✅ Plugin para etiquetas -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
+  <!-- ✅ Favicon -->
   <link rel="icon" type="image/svg+xml"
     href='data:image/svg+xml;utf8,
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
@@ -25,11 +30,7 @@
     }
 
     *{ box-sizing:border-box; }
-
-    html, body{
-      height:100%;
-      margin:0;
-    }
+    html, body{ height:100%; margin:0; }
 
     body{
       font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial;
@@ -50,83 +51,44 @@
       pointer-events:none;
     }
 
-    .app{
-      height:100vh;
-      display:flex;
-      align-items:stretch;
-      justify-content:center;
-    }
+    .app{ height:100vh; display:flex; align-items:stretch; justify-content:center; }
 
     main{
       width:100%;
-      max-width:1200px;
+      max-width:1600px;
       padding:16px;
       display:flex;
       flex-direction:column;
       gap:16px;
 
-      /* ✅ Scroll solo aquí */
       overflow:auto;
       padding-bottom:24px;
+      scrollbar-width:none;
+      -ms-overflow-style:none;
+    }
+    main::-webkit-scrollbar{ width:0; height:0; }
 
-      /* ✅ Ocultar scrollbar visual (sin desactivar scroll) */
-      scrollbar-width:none;          /* Firefox */
-      -ms-overflow-style:none;       /* IE/Edge viejo */
-    }
-    main::-webkit-scrollbar{
-      width:0;
-      height:0;
-    }
+    .menu-grid{ flex:1; display:flex; flex-direction:column; gap:16px; }
 
-    .menu-grid{
-      flex:1;
-      display:flex;
-      flex-direction:column;
-      gap:16px;
-    }
-
-    /* ✅ Header con logo (cohete) + título grande con sombra */
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-    }
+    .brand{ display:flex; align-items:center; gap:12px; }
 
     .brand-logo{
-      width:42px;
-      height:42px;
-      border-radius:14px;
-      display:grid;
-      place-items:center;
+      width:42px; height:42px; border-radius:14px;
+      display:grid; place-items:center;
       border:1px solid var(--border);
       background:rgba(15,23,42,.9);
       box-shadow:0 10px 30px rgba(0,0,0,.25);
       flex:0 0 auto;
     }
-
-    .brand-logo span{
-      font-size:22px;
-      line-height:1;
-      transform:translateY(1px);
-    }
+    .brand-logo span{ font-size:22px; line-height:1; transform:translateY(1px); }
 
     .title{
-      margin:0;
-      font-size:34px;        /* ✅ más grande */
-      font-weight:800;
-      letter-spacing:.5px;
-      text-transform:uppercase;
-      /* ✅ sombra/profundidad */
-      text-shadow:
-        0 2px 0 rgba(0,0,0,.25),
-        0 10px 30px rgba(0,0,0,.55);
+      margin:0; font-size:34px; font-weight:800;
+      letter-spacing:.5px; text-transform:uppercase;
+      text-shadow:0 2px 0 rgba(0,0,0,.25), 0 10px 30px rgba(0,0,0,.55);
     }
 
-    .subtitle{
-      margin:0;
-      font-size:14px;
-      color:var(--muted);
-    }
+    .subtitle{ margin:0; font-size:14px; color:var(--muted); }
 
     .section{
       border:1px solid var(--border);
@@ -136,28 +98,15 @@
     }
 
     .section-header{
-      display:flex;
-      align-items:baseline;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:10px;
+      display:flex; align-items:baseline; justify-content:space-between;
+      gap:12px; margin-bottom:10px;
     }
-
-    .section-title{
-      margin:0;
-      font-size:16px;
-      font-weight:600;
-    }
-
-    .section-desc{
-      margin:0;
-      font-size:12px;
-      color:var(--muted);
-    }
+    .section-title{ margin:0; font-size:16px; font-weight:600; }
+    .section-desc{ margin:0; font-size:12px; color:var(--muted); }
 
     .grid{
       display:grid;
-      grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
       gap:12px;
     }
 
@@ -176,14 +125,8 @@
       gap:6px;
       transition:.18s transform, .18s box-shadow, .18s border-color, .18s background;
     }
-
     .rbtn span{ font-weight:500; }
-
-    .rbtn small{
-      font-size:12px;
-      color:var(--muted);
-    }
-
+    .rbtn small{ font-size:12px; color:var(--muted); }
     .rbtn:hover{
       transform:translateY(-2px);
       border-color:var(--accent);
@@ -202,50 +145,34 @@
       flex-direction:column;
       height: calc(100vh - 32px);
     }
-
-    .viewer iframe{
-      border:0;
-      width:100%;
-      height:100%;
-    }
+    .viewer iframe{ border:0; width:100%; height:100%; }
 
     .back-btn{
-      position:absolute;
-      top:10px;
-      left:10px;
-      z-index:10;
-      border-radius:999px;
-      border:1px solid var(--border);
-      padding:6px 12px;
-      font-size:13px;
+      position:absolute; top:10px; left:10px; z-index:10;
+      border-radius:999px; border:1px solid var(--border);
+      padding:6px 12px; font-size:13px;
       background:rgba(15,23,42,.9);
-      color:var(--fg);
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      gap:6px;
+      color:var(--fg); cursor:pointer;
+      display:flex; align-items:center; gap:6px;
     }
-
     .back-btn:hover{ border-color:var(--accent); }
-
     .hidden{ display:none !important; }
 
-    /* Paneles inferiores 50/50 */
     .bottom-panels{
       display:grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(620px, 1fr) minmax(620px, 1fr);
       gap:16px;
+      align-items:start;
     }
 
     .panel{
       border:1px solid var(--border);
       border-radius:18px;
       background:rgba(2,6,23,.55);
-      padding:14px;
+      padding:12px;
       min-height:260px;
     }
 
-    /* Tabla accesos */
     .table-wrap{
       overflow:auto;
       border:1px solid var(--border);
@@ -253,41 +180,24 @@
       scrollbar-width:none;
       -ms-overflow-style:none;
     }
-    .table-wrap::-webkit-scrollbar{
-      width:0;
-      height:0;
-    }
+    .table-wrap::-webkit-scrollbar{ width:0; height:0; }
 
-    .access-table{
-      width:100%;
-      border-collapse:collapse;
-      min-width:620px;
-    }
-
-    .access-table th,
-    .access-table td{
+    .access-table{ width:100%; border-collapse:collapse; min-width:620px; }
+    .access-table th, .access-table td{
       padding:10px 12px;
       border-bottom:1px solid rgba(31,41,55,.8);
       text-align:left;
       font-size:13px;
       vertical-align:middle;
     }
-
     .access-table th{
       color:var(--muted);
       font-weight:600;
       background:rgba(15,23,42,.65);
-      position:sticky;
-      top:0;
-      z-index:1;
+      position:sticky; top:0; z-index:1;
     }
-
     .access-table td{ color:var(--fg); }
-
-    .access-table a{
-      color:var(--accent-2);
-      text-decoration:none;
-    }
+    .access-table a{ color:var(--accent-2); text-decoration:none; }
 
     .open-link{
       border-radius:999px;
@@ -298,7 +208,6 @@
       color:var(--fg);
       cursor:pointer;
     }
-
     .open-link:hover{ border-color:var(--accent); }
 
     .group-row td{
@@ -311,29 +220,227 @@
       border-bottom:1px solid rgba(31,41,55,.9);
     }
 
-    /* ✅ Frase final */
     .quote{
       margin: 8px 0 0;
-      font-size: 12px;     /* miniatura */
+      font-size: 12px;
       color: var(--muted);
-      font-style: italic;  /* cursiva */
+      font-style: italic;
       line-height: 1.4;
     }
 
-    @media (max-width: 900px){
-      .bottom-panels{ grid-template-columns: 1fr; }
-      .access-table{ min-width:0; }
+    .kpi-row-6{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:8px;
+      margin-top:8px;
     }
 
+    .kpi-row-1{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:8px;
+      margin-top:10px;
+    }
+
+    .kpi-tile{
+      border:1px solid rgba(31,41,55,.8);
+      border-radius:14px;
+      padding:10px 10px;
+      background:linear-gradient(180deg, rgba(15,23,42,.78), rgba(2,6,23,.65));
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      min-height:62px;
+    }
+    .kpi-tile.light{
+      background:linear-gradient(180deg, rgba(56,189,248,.22), rgba(15,23,42,.65));
+    }
+
+    .kpi-left{ display:flex; flex-direction:column; gap:6px; min-width:0; }
+    .kpi-title{
+      font-size:10px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.03em;
+      font-weight:700;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 210px;
+    }
+    .kpi-number{
+      font-size:20px;
+      font-weight:900;
+      line-height:1;
+      white-space:nowrap;
+    }
+    .kpi-number.big-money{ font-size:22px; }
+
+    .kpi-icon{
+      width:36px; height:36px;
+      border-radius:12px;
+      display:grid; place-items:center;
+      border:1px solid rgba(226,232,240,.16);
+      background:rgba(15,23,42,.55);
+      font-size:18px;
+      flex:0 0 auto;
+    }
+
+    #lastUpdate{ font-size:11px; margin-top:8px !important; }
+
+    .chart-wrap{
+      margin-top:12px;
+      border:1px solid rgba(31,41,55,.6);
+      background:rgba(2,6,23,.35);
+      border-radius:14px;
+      padding:10px;
+    }
+    .chart-title{
+      font-size:11px;
+      color:var(--muted);
+      margin-bottom:8px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+    }
+    .chart-canvas{
+      width:100% !important;
+      height:200px !important;
+    }
+    .chart-canvas.donut{ height:260px !important; }
+
+    /* ✅ Controles de fecha */
+    .date-controls{
+      border:1px solid rgba(31,41,55,.6);
+      background:rgba(2,6,23,.25);
+      border-radius:14px;
+      padding:10px;
+      margin-top:10px;
+    }
+    .date-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(226,232,240,.10);
+      background:rgba(15,23,42,.55);
+      font-size:12px;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .inp{
+      border-radius:10px;
+      border:1px solid rgba(226,232,240,.12);
+      background:rgba(15,23,42,.65);
+      color:var(--fg);
+      padding:6px 10px;
+      font-size:12px;
+      outline:none;
+    }
+    .btn{
+      border-radius:999px;
+      border:1px solid rgba(226,232,240,.12);
+      background:rgba(15,23,42,.75);
+      color:var(--fg);
+      padding:6px 10px;
+      font-size:12px;
+      cursor:pointer;
+    }
+    .btn:hover{ border-color: var(--accent); }
+
+    /* ✅ Slider doble */
+    .slider-wrap{
+      margin-top:10px;
+      padding:10px;
+      border-radius:14px;
+      border:1px solid rgba(226,232,240,.08);
+      background:rgba(15,23,42,.35);
+    }
+    .slider-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:8px;
+    }
+    .slider-label{
+      font-size:12px;
+      color:var(--muted);
+    }
+    .range-box{
+      position:relative;
+      height:34px;
+      display:flex;
+      align-items:center;
+    }
+    .range-box input[type="range"]{
+      -webkit-appearance:none;
+      appearance:none;
+      width:100%;
+      height:6px;
+      border-radius:999px;
+      background:rgba(226,232,240,.12);
+      outline:none;
+      position:absolute;
+      left:0;
+      right:0;
+      pointer-events:auto;
+    }
+    .range-box input[type="range"]::-webkit-slider-thumb{
+      -webkit-appearance:none;
+      appearance:none;
+      width:18px;
+      height:18px;
+      border-radius:50%;
+      background:rgba(56,189,248,0.95);
+      border:2px solid rgba(2,6,23,0.8);
+      box-shadow:0 8px 18px rgba(0,0,0,.35);
+      cursor:pointer;
+    }
+    .range-box input[type="range"]::-moz-range-thumb{
+      width:18px; height:18px; border-radius:50%;
+      background:rgba(56,189,248,0.95);
+      border:2px solid rgba(2,6,23,0.8);
+      box-shadow:0 8px 18px rgba(0,0,0,.35);
+      cursor:pointer;
+    }
+    .range-fill{
+      position:absolute;
+      left:0;
+      height:6px;
+      border-radius:999px;
+      background:linear-gradient(90deg, rgba(56,189,248,0.95), rgba(34,211,238,0.65));
+      pointer-events:none;
+    }
+
+    @media (max-width: 1280px){
+      .bottom-panels{ grid-template-columns: 1fr; }
+      .access-table{ min-width:0; }
+      .kpi-row-6{ grid-template-columns:repeat(2, 1fr); }
+      .kpi-row-1{ grid-template-columns:1fr; }
+    }
     @media (max-width: 600px){
       main{ padding:10px; }
-      .title{ font-size:24px; } /* en móvil baja */
+      .title{ font-size:24px; }
       .grid{ grid-template-columns:1fr; }
       .section-header{ flex-direction:column; align-items:flex-start; }
       .brand-logo{ width:38px; height:38px; }
+      .kpi-row-6{ grid-template-columns:1fr; }
     }
   </style>
 </head>
+
 <body>
   <img class="bg" src="assets/BG ANALYTICS.png" alt="CentroNet Analytics" />
 
@@ -341,17 +448,14 @@
     <main id="main">
       <section class="menu-grid" id="menu">
         <div>
-          <!-- ✅ Logo cohete + título -->
           <div class="brand">
-            <div class="brand-logo" aria-hidden="true" title="CentroNet Analytics">
-              <span>🚀</span>
-            </div>
+            <div class="brand-logo" aria-hidden="true" title="CentroNet Analytics"><span>🚀</span></div>
             <h1 class="title">CENTRONET ANALYTICS</h1>
           </div>
           <p class="subtitle">Selecciona un panel para abrir</p>
         </div>
 
-        <!-- ✅ SECCIÓN 1: CLIENTES -->
+        <!-- CLIENTES -->
         <div class="section">
           <div class="section-header">
             <h2 class="section-title">Clientes CentroNet</h2>
@@ -359,64 +463,20 @@
           </div>
 
           <div class="grid" aria-label="Reportes de clientes">
-            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiNGU3OWUzMjQtMmM3OS00MDE1LWIzMWEtMzFhNTg5ZGJiZDA3IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
-              <span>PBI ZEISS</span>
-              <small>Óptica ZEISS</small>
-            </button>
-
-            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiNzQxYmY1M2QtYjg3Yy00NzljLTlhOWYtYTg2N2JlZjRkYjJmIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
-              <span>PBI QBANO</span>
-              <small>Qbano</small>
-            </button>
-
-            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiOWQyNzNhNmYtZjZhZS00NzVkLTk0MzQtYWVjYTYxMWMxMTY1IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
-              <span>PBI ICESI - TQ</span>
-              <small>Icesi - TQ</small>
-            </button>
-
-            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiYmY0NWVhMjAtYTNhMi00ZDJkLTliZDYtY2QxZjY4ZmZjMWNlIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
-              <span>MARATON DEL VALLE</span>
-              <small>Maraton del valle</small>
-            </button>
-
-            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiOTZmOGYwYWYtNTNjZi00MGUyLWJiMDMtYWU0Zjc0YjUwY2U3IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
-              <span>PBI CALZATODO</span>
-              <small>Calzatodo</small>
-            </button>
-
-            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiMDE5MjMwZTctY2YzYi00Yzk1LWE0NmUtZTgyNWY2Y2M5Y2Y0IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
-              <span>PBI CCC</span>
-              <small>Cámara de Comercio de Cali</small>
-            </button>
-
-            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiYjlkY2U4OTEtZDAwYS00MWE2LWFhMjEtZDk5ZGQ0OGI2ODRmIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
-              <span>PACIFIC CENTER</span>
-              <small>Pacific Center</small>
-            </button>
-
-            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiNjc3ZTNkMTktZGU5OS00MmEzLWJiNjEtZTIzYjg3Yjk5NDUxIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
-              <span>PBI FRISBY</span>
-              <small>Frisby</small>
-            </button>
-
-            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiYmQ0NGM4MTUtMWZiMS00NmFiLTg3ODktMWU2ZmNiMGE2ZDVhIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
-              <span>PBI JARAMILLO MORA</span>
-              <small>Jaramillo Mora</small>
-            </button>
-
-            <button class="rbtn" data-src="https://app.powerbi.com/links/5VSGqcgD0x?ctid=a24aebc1-c077-4093-a76b-5ea185711956&pbi_source=linkShare">
-              <span>PBI CC UNICO</span>
-              <small>Unico/small>
-            </button>
-
-            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiMTIyZmJhNmItODgyZS00NDUyLWJhZGMtYTlkMzFlYTgxZmU3IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
-              <span>PBI MALL PLAZA</span>
-              <small>Centro comercial MallPlaza</small>
-            </button>
+            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiNGU3OWUzMjQtMmM3OS00MDE1LWIzMWEtMzFhNTg5ZGJiZDA3IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9"><span>PBI ZEISS</span><small>Óptica ZEISS</small></button>
+            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiNzQxYmY1M2QtYjg3Yy00NzljLTlhOWYtYTg2N2JlZjRkYjJmIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9"><span>PBI QBANO</span><small>Qbano</small></button>
+            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiOWQyNzNhNmYtZjZhZS00NzVkLTk0MzQtYWVjYTYxMWMxMTY1IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9"><span>PBI ICESI - TQ</span><small>Icesi - TQ</small></button>
+            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiYmY0NWVhMjAtYTNhMi00ZDJkLTliZDYtY2QxZjY4ZmZjMWNlIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9"><span>MARATON DEL VALLE</span><small>Maratón del valle</small></button>
+            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiOTZmOGYwYWYtNTNjZi00MGUyLWJiMDMtYWU0Zjc0YjUwY2U3IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9"><span>PBI CALZATODO</span><small>Calzatodo</small></button>
+            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiMDE5MjMwZTctY2YzYi00Yzk1LWE0NmUtZTgyNWY2Y2M5Y2Y0IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9"><span>PBI CCC</span><small>Cámara de Comercio de Cali</small></button>
+            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiYjlkY2U4OTEtZDAwYS00MWE2LWFhMjEtZDk5ZGQ0OGI2ODRmIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9"><span>PACIFIC CENTER</span><small>Pacific Center</small></button>
+            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiNjc3ZTNkMTktZGU5OS00MmEzLWJiNjEtZTIzYjg3Yjk5NDUxIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9"><span>PBI FRISBY</span><small>Frisby</small></button>
+            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiYmQ0NGM4MTUtMWZiMS00NmFiLTg3ODktMWU2ZmNiMGE2ZDVhIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9"><span>PBI JARAMILLO MORA</span><small>Jaramillo Mora</small></button>
+            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiMTIyZmJhNmItODgyZS00NDUyLWJhZGMtYTlkMzFlYTgxZmU3IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9"><span>PBI MALL PLAZA</span><small>Centro comercial MallPlaza</small></button>
           </div>
         </div>
 
-        <!-- ✅ SECCIÓN 2: INTERNOS -->
+        <!-- INTERNOS -->
         <div class="section">
           <div class="section-header">
             <h2 class="section-title">CENTRONET</h2>
@@ -424,26 +484,14 @@
           </div>
 
           <div class="grid" aria-label="Reportes internos">
-            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiMjc5ODgyOTAtY2ZlNC00MTZiLWFmZTAtOTU1YjViM2RjMDdjIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
-              <span>PBI VENTAS</span>
-              <small>Ventas CENTRONET</small>
-            </button>
-
-            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiMTc2NmYwYjEtOGU2Ni00OTgxLThiOGUtM2M0YjJkM2EwODc1IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
-              <span>PBI CARTERA</span>
-              <small>Cartera CENTRONET</small>
-            </button>
-
-            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiNzM4NjBkMTUtM2IxNi00NWVmLWI1OGUtNWRhMjVhOGIzNGRlIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9">
-              <span>PBI INVENTARIO</span>
-              <small>Inventario CENTRONET</small>
-            </button>
+            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiMjc5ODgyOTAtY2ZlNC00MTZiLWFmZTAtOTU1YjViM2RjMDdjIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9"><span>PBI VENTAS</span><small>Ventas CENTRONET</small></button>
+            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiMTc2NmYwYjEtOGU2Ni00OTgxLThiOGUtM2M0YjJkM2EwODc1IiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9"><span>PBI CARTERA</span><small>Cartera CENTRONET</small></button>
+            <button class="rbtn" data-src="https://app.powerbi.com/view?r=eyJrIjoiNzM4NjBkMTUtM2IxNi00NWVmLWI1OGUtNWRhMjVhOGIzNGRlIiwidCI6ImEyNGFlYmMxLWMwNzctNDA5My1hNzZiLTVlYTE4NTcxMTk1NiJ9"><span>PBI INVENTARIO</span><small>Inventario CENTRONET</small></button>
           </div>
         </div>
 
-        <!-- ✅ 2 PANELes inferiores -->
+        <!-- PANEL INFERIOR -->
         <div class="bottom-panels">
-          <!-- IZQUIERDA: Tabla de accesos (Clientes + Internos) -->
           <div class="panel">
             <div class="section-header" style="margin-bottom:10px;">
               <h2 class="section-title">Accesos</h2>
@@ -465,20 +513,66 @@
             </div>
           </div>
 
-          <!-- DERECHA: Reservado -->
           <div class="panel">
-            <div class="section-header" style="margin-bottom:10px;">
+            <div class="section-header" style="margin-bottom:12px;">
               <h2 class="section-title">Indicadores internos</h2>
-              <p class="section-desc">Conexión a Access / gráficas (pendiente)</p>
+              <p class="section-desc">Actualiza desde Access (vía JSON)</p>
             </div>
 
-            <p class="subtitle" style="margin-top:0;">
-              Aquí iremos con la conexión a Access y las visualizaciones.
-            </p>
+            <!-- ✅ Controles fecha -->
+            <div class="date-controls">
+              <div class="date-row">
+                <div class="pill">
+                  <b>Desde</b>
+                  <input id="dateFrom" class="inp" type="date">
+                </div>
+                <div class="pill">
+                  <b>Hasta</b>
+                  <input id="dateTo" class="inp" type="date">
+                </div>
+
+                <div class="pill" style="gap:6px;">
+                  <button class="btn" id="btn7">7d</button>
+                  <button class="btn" id="btn30">30d</button>
+                  <button class="btn" id="btn90">90d</button>
+                  <button class="btn" id="btnReset">Reset</button>
+                </div>
+              </div>
+
+              <!-- ✅ Slider doble -->
+              <div class="slider-wrap">
+                <div class="slider-top">
+                  <div class="slider-label" id="sliderLabelLeft">Rango: —</div>
+                  <div class="slider-label" id="sliderLabelRight">—</div>
+                </div>
+
+                <div class="range-box">
+                  <div class="range-fill" id="rangeFill"></div>
+                  <input id="rangeStart" type="range" min="0" max="0" value="0" step="1">
+                  <input id="rangeEnd" type="range" min="0" max="0" value="0" step="1">
+                </div>
+
+                <div class="quote" id="rangeInfo">Filtro: (sin filtro) · Campo: Inicio</div>
+              </div>
+            </div>
+
+            <!-- ✅ KPIs -->
+            <div class="kpi-row-6" id="kpiRowTop"></div>
+            <div class="kpi-row-1" id="kpiRowMid"></div>
+            <div class="quote" id="lastUpdate"></div>
+
+            <div class="chart-wrap">
+              <div class="chart-title">Oportunidades por estado <span class="section-desc">Barras 3D</span></div>
+              <canvas id="chartEstadosCount" class="chart-canvas"></canvas>
+            </div>
+
+            <div class="chart-wrap">
+              <div class="chart-title">Valor total por estado (COP) <span class="section-desc">Anillo</span></div>
+              <canvas id="chartEstadosValorDonut" class="chart-canvas donut"></canvas>
+            </div>
           </div>
         </div>
 
-        <!-- ✅ Frase final (cursiva y miniatura) -->
         <p class="quote">
           "Without data, you're just another person with an opinion."<br>
           -W. Edwards Deming
@@ -486,7 +580,6 @@
 
       </section>
 
-      <!-- VIEWER -->
       <section class="viewer hidden" id="viewer">
         <button class="back-btn" id="backBtn">← Volver al menú</button>
         <iframe id="frame" allowfullscreen title="Power BI"></iframe>
@@ -495,6 +588,7 @@
   </div>
 
   <script>
+    // ========= Viewer PBI =========
     const menu = document.getElementById('menu');
     const viewer = document.getElementById('viewer');
     const frame = document.getElementById('frame');
@@ -504,32 +598,17 @@
     function openReport(btn){
       const src = btn.dataset.src;
       if(!src) return;
-
-      if(frame.src !== src){
-        frame.src = src;
-      }
-
+      if(frame.src !== src){ frame.src = src; }
       menu.classList.add('hidden');
       viewer.classList.remove('hidden');
     }
+    buttons.forEach(btn => btn.addEventListener('click', () => openReport(btn)));
+    backBtn.addEventListener('click', () => { viewer.classList.add('hidden'); menu.classList.remove('hidden'); });
 
-    // Click en botones → abre el reporte en la misma ventana
-    buttons.forEach(btn => {
-      btn.addEventListener('click', () => openReport(btn));
-    });
-
-    // Botón volver → regresa al grid de botones
-    backBtn.addEventListener('click', () => {
-      viewer.classList.add('hidden');
-      menu.classList.remove('hidden');
-    });
-
-    // ✅ Tabla de accesos (Clientes + Internos)
+    // ========= Tabla accesos =========
     const accessTableBody = document.getElementById('accessTableBody');
-
     const clientesGrid = document.querySelector('.grid[aria-label="Reportes de clientes"]');
     const internosGrid = document.querySelector('.grid[aria-label="Reportes internos"]');
-
     const clientButtons = clientesGrid ? Array.from(clientesGrid.querySelectorAll('.rbtn')) : [];
     const internalButtons = internosGrid ? Array.from(internosGrid.querySelectorAll('.rbtn')) : [];
 
@@ -549,16 +628,9 @@
       const src   = btn.dataset.src;
 
       const tr = document.createElement('tr');
-
-      const tdTipo = document.createElement('td');
-      tdTipo.textContent = tipo;
-
-      const tdPanel = document.createElement('td');
-      tdPanel.textContent = title;
-
-      const tdDesc = document.createElement('td');
-      tdDesc.textContent = desc;
-
+      const tdTipo = document.createElement('td'); tdTipo.textContent = tipo;
+      const tdPanel = document.createElement('td'); tdPanel.textContent = title;
+      const tdDesc = document.createElement('td'); tdDesc.textContent = desc;
       const tdAccion = document.createElement('td');
 
       const openBtn = document.createElement('button');
@@ -567,9 +639,7 @@
       openBtn.addEventListener('click', () => openReport(btn));
 
       const a = document.createElement('a');
-      a.href = src;
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
+      a.href = src; a.target = "_blank"; a.rel = "noopener noreferrer";
       a.textContent = "Link";
       a.style.marginLeft = "10px";
       a.style.fontSize = "12px";
@@ -581,25 +651,588 @@
       tr.appendChild(tdPanel);
       tr.appendChild(tdDesc);
       tr.appendChild(tdAccion);
-
       accessTableBody.appendChild(tr);
     }
 
     function buildAccessTable(){
       if(!accessTableBody) return;
       accessTableBody.innerHTML = "";
-
       if(clientButtons.length){
         addGroupRow("Clientes CentroNet");
         clientButtons.forEach(btn => addRow("Cliente", btn));
       }
-
       if(internalButtons.length){
         addGroupRow("CentroNet (Interno)");
         internalButtons.forEach(btn => addRow("Interno", btn));
       }
     }
+    buildAccessTable();
 
+    // ========= KPIs + Charts + Fecha (Inicio) =========
+    let chartEstadosCount = null;
+    let chartEstadosValorDonut = null;
+    let ALL_PROYECTOS = [];
+    let generatedAtGlobal = null;
+
+    const dateFrom = document.getElementById("dateFrom");
+    const dateTo = document.getElementById("dateTo");
+    const rangeInfo = document.getElementById("rangeInfo");
+
+    const btn7 = document.getElementById("btn7");
+    const btn30 = document.getElementById("btn30");
+    const btn90 = document.getElementById("btn90");
+    const btnReset = document.getElementById("btnReset");
+
+    // Slider
+    const rangeStart = document.getElementById("rangeStart");
+    const rangeEnd = document.getElementById("rangeEnd");
+    const rangeFill = document.getElementById("rangeFill");
+    const sliderLabelLeft = document.getElementById("sliderLabelLeft");
+    const sliderLabelRight = document.getElementById("sliderLabelRight");
+
+    let UNIQUE_DATES = []; // fechas Inicio únicas ordenadas (YYYY-MM-DD)
+
+    function moneyCOP(n){
+      const v = Number(n || 0);
+      return v.toLocaleString("es-CO", { style:"currency", currency:"COP", maximumFractionDigits:0 });
+    }
+
+    function parseISODate(s){
+      if(!s) return null;
+      const t = String(s).trim();
+      const m = t.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if(!m) return null;
+      const d = new Date(`${m[1]}-${m[2]}-${m[3]}T00:00:00`);
+      return isNaN(d.getTime()) ? null : d;
+    }
+
+    function toISO(d){
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,"0");
+      const dd = String(d.getDate()).padStart(2,"0");
+      return `${y}-${m}-${dd}`;
+    }
+
+    // Estados
+    const STATE_WON = new Set(["Cerrado - Ganada"]);
+    const STATE_DEMO = new Set(["Demo"]);
+    const STATE_PRESENTED = new Set(["Cotización", "Presentado a cliente", "Presentado"]);
+    const STATE_DETENIDO = new Set(["Detenido"]);
+    const STATE_FINALIZADO = new Set(["Finalizado"]);
+
+    // Colores azules
+    function bluePalette(n){
+      const base = [
+        "rgba(56,189,248,0.96)",
+        "rgba(34,211,238,0.92)",
+        "rgba(59,130,246,0.88)",
+        "rgba(99,102,241,0.82)",
+        "rgba(14,165,233,0.76)",
+        "rgba(6,182,212,0.70)",
+        "rgba(37,99,235,0.64)",
+        "rgba(30,64,175,0.58)"
+      ];
+      const out = [];
+      for(let i=0;i<n;i++) out.push(base[i % base.length]);
+      return out;
+    }
+
+    const shadowPlugin = {
+      id: "shadowPlugin",
+      beforeDatasetsDraw(chart){
+        const { ctx } = chart;
+        ctx.save();
+        ctx.shadowColor = "rgba(0,0,0,0.35)";
+        ctx.shadowBlur = 14;
+        ctx.shadowOffsetY = 6;
+      },
+      afterDatasetsDraw(chart){ chart.ctx.restore(); }
+    };
+
+    function makeBlueBarGradient(ctx, area){
+      const g = ctx.createLinearGradient(0, area.top, 0, area.bottom);
+      g.addColorStop(0, "rgba(56,189,248,0.98)");
+      g.addColorStop(0.55, "rgba(34,211,238,0.55)");
+      g.addColorStop(1, "rgba(2,6,23,0.95)");
+      return g;
+    }
+
+    function barDatalabelsConfig(){
+      return {
+        anchor: "end",
+        align: "top",
+        offset: 10,
+        clamp: true,
+        clip: false,
+        color: "rgba(226,232,240,0.98)",
+        backgroundColor: "rgba(2,6,23,0.78)",
+        borderColor: "rgba(226,232,240,0.12)",
+        borderWidth: 1,
+        borderRadius: 999,
+        padding: {top:3, right:7, bottom:3, left:7},
+        font: { size: 10, weight: "900" },
+        formatter: (v) => (v == null ? "" : v)
+      };
+    }
+
+    function donutDatalabelsConfig(){
+      return {
+        anchor: "end",
+        align: "end",
+        offset: 18,
+        clamp: true,
+        clip: false,
+        color: "rgba(226,232,240,0.98)",
+        backgroundColor: "rgba(2,6,23,0.78)",
+        borderColor: "rgba(226,232,240,0.12)",
+        borderWidth: 1,
+        borderRadius: 999,
+        padding: {top:3, right:7, bottom:3, left:7},
+        font: { size: 10, weight: "900" },
+        formatter: (value, ctx) => {
+          const data = ctx.chart.data.datasets[0].data || [];
+          const total = data.reduce((a,b)=>a+(Number(b)||0), 0);
+          if(!total || !value) return "";
+          const pct = Math.round((value/total)*100);
+          if(pct < 7) return "";
+          return pct + "%";
+        }
+      };
+    }
+
+    function renderBarChart3D(existingChart, canvasId, labels, values){
+      const canvas = document.getElementById(canvasId);
+      if(!canvas) return existingChart;
+      const ctx = canvas.getContext("2d");
+
+      if(existingChart){
+        existingChart.destroy();
+        existingChart = null;
+      }
+
+      const maxVal = Math.max(...values, 0);
+      const suggestedMax = maxVal === 0 ? 1 : Math.ceil(maxVal * 1.25);
+
+      const chart = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [{
+            label: "Oportunidades",
+            data: values,
+            backgroundColor: "rgba(56,189,248,0.75)",
+            borderColor: "rgba(226,232,240,0.18)",
+            borderWidth: 1,
+            borderRadius: 14,
+            borderSkipped: false
+          }]
+        },
+        options: {
+          responsive:true,
+          maintainAspectRatio:false,
+          layout: { padding: { top: 42, right: 18, bottom: 6, left: 18 } },
+          plugins: {
+            legend: { display:false },
+            tooltip: { callbacks: { label: (c) => ` ${c.raw} oportunidades` } },
+            datalabels: barDatalabelsConfig()
+          },
+          scales: {
+            x: { ticks: { color:"rgba(148,163,184,0.92)", font:{ size:10 } }, grid:{ display:false } },
+            y: {
+              beginAtZero:true,
+              suggestedMax,
+              ticks:{ color:"rgba(148,163,184,0.92)", font:{ size:10 } },
+              grid:{ color:"rgba(31,41,55,0.35)" }
+            }
+          }
+        },
+        plugins: [shadowPlugin, ChartDataLabels]
+      });
+
+      if(chart?.chartArea){
+        chart.data.datasets[0].backgroundColor = makeBlueBarGradient(chart.ctx, chart.chartArea);
+        chart.update();
+      }
+
+      return chart;
+    }
+
+    function renderDonut(existingChart, canvasId, labels, values){
+      const canvas = document.getElementById(canvasId);
+      if(!canvas) return existingChart;
+      const ctx = canvas.getContext("2d");
+
+      if(existingChart){
+        existingChart.destroy();
+        existingChart = null;
+      }
+
+      const colors = bluePalette(labels.length);
+
+      return new Chart(ctx, {
+        type:"doughnut",
+        data:{
+          labels,
+          datasets:[{
+            label:"Valor (COP)",
+            data: values,
+            backgroundColor: colors,
+            borderColor: "rgba(2,6,23,0.90)",
+            borderWidth: 2,
+            hoverOffset: 10
+          }]
+        },
+        options:{
+          responsive:true,
+          maintainAspectRatio:false,
+          cutout:"68%",
+          layout: { padding: { top: 18, right: 90, bottom: 22, left: 90 } },
+          plugins:{
+            legend:{
+              position:"bottom",
+              labels:{
+                color:"rgba(148,163,184,0.95)",
+                boxWidth:10,
+                boxHeight:10,
+                padding:10,
+                font:{ size:10 }
+              }
+            },
+            tooltip:{ callbacks:{ label:(c)=>` ${c.label}: ${moneyCOP(c.raw)}` } },
+            datalabels: donutDatalabelsConfig()
+          }
+        },
+        plugins:[shadowPlugin, ChartDataLabels]
+      });
+    }
+
+    function topNWithOthers(items, n){
+      if(items.length <= n) return { top: items, othersValue: 0 };
+      const top = items.slice(0, n);
+      const others = items.slice(n);
+      const othersValue = others.reduce((acc, x) => acc + (x.valor || 0), 0);
+      return { top, othersValue };
+    }
+
+    function renderKpisTiles(k){
+      const top = document.getElementById("kpiRowTop");
+      const mid = document.getElementById("kpiRowMid");
+      const last = document.getElementById("lastUpdate");
+
+      if(top){
+        top.innerHTML = `
+          <div class="kpi-tile"><div class="kpi-left"><div class="kpi-title">Cantidad de oportunidades</div><div class="kpi-number">${k.totalOpp}</div></div><div class="kpi-icon">📈</div></div>
+          <div class="kpi-tile"><div class="kpi-left"><div class="kpi-title">Oportunidades ganadas</div><div class="kpi-number">${k.wonOpp}</div></div><div class="kpi-icon">🏆</div></div>
+          <div class="kpi-tile"><div class="kpi-left"><div class="kpi-title">Oportunidades en demo</div><div class="kpi-number">${k.demoOpp}</div></div><div class="kpi-icon">🧪</div></div>
+          <div class="kpi-tile"><div class="kpi-left"><div class="kpi-title">Presentadas a cliente</div><div class="kpi-number">${k.presentedOpp}</div></div><div class="kpi-icon">🧾</div></div>
+          <div class="kpi-tile"><div class="kpi-left"><div class="kpi-title">Detenidas</div><div class="kpi-number">${k.detOpp}</div></div><div class="kpi-icon">⏸️</div></div>
+          <div class="kpi-tile"><div class="kpi-left"><div class="kpi-title">Finalizadas</div><div class="kpi-number">${k.finOpp}</div></div><div class="kpi-icon">🏁</div></div>
+        `;
+      }
+
+      if(mid){
+        mid.innerHTML = `
+          <div class="kpi-tile light"><div class="kpi-left"><div class="kpi-title">Valor total de oportunidades</div><div class="kpi-number big-money">${moneyCOP(k.totalValor)}</div></div><div class="kpi-icon">💰</div></div>
+          <div class="kpi-tile light"><div class="kpi-left"><div class="kpi-title">Valor oportunidades ganadas</div><div class="kpi-number big-money">${moneyCOP(k.wonValor)}</div></div><div class="kpi-icon">✅</div></div>
+          <div class="kpi-tile light"><div class="kpi-left"><div class="kpi-title">% oportunidades ganadas</div><div class="kpi-number">${k.winRate}%</div></div><div class="kpi-icon">%</div></div>
+        `;
+      }
+
+      if(last){
+        last.innerHTML = `Última actualización: <b>${k.generatedAt || "-"}</b> · Registros (filtro): <b>${k.totalOpp}</b>`;
+      }
+    }
+
+    function getUniqueDatesFromInicio(proyectos){
+      const set = new Set();
+      for(const p of proyectos){
+        const d = parseISODate(p.Inicio);
+        if(d) set.add(toISO(d));
+      }
+      return Array.from(set).sort(); // string ISO se ordena bien
+    }
+
+    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+
+    function updateSliderFill(){
+      const min = Number(rangeStart.value);
+      const max = Number(rangeEnd.value);
+      const a = Math.min(min, max);
+      const b = Math.max(min, max);
+      const total = Number(rangeStart.max) || 0;
+
+      const leftPct = total ? (a / total) * 100 : 0;
+      const rightPct = total ? (b / total) * 100 : 0;
+
+      rangeFill.style.left = leftPct + "%";
+      rangeFill.style.width = (rightPct - leftPct) + "%";
+
+      const d1 = UNIQUE_DATES[a] || "—";
+      const d2 = UNIQUE_DATES[b] || "—";
+      sliderLabelLeft.textContent = `Rango: ${d1}`;
+      sliderLabelRight.textContent = d2;
+    }
+
+    function syncDatesFromSlider(){
+      if(!UNIQUE_DATES.length) return;
+
+      const min = Number(rangeStart.value);
+      const max = Number(rangeEnd.value);
+      const a = Math.min(min, max);
+      const b = Math.max(min, max);
+
+      dateFrom.value = UNIQUE_DATES[a] || "";
+      dateTo.value = UNIQUE_DATES[b] || "";
+
+      updateSliderFill();
+      refreshDashboardUI(false);
+    }
+
+    function syncSliderFromDates(){
+      if(!UNIQUE_DATES.length) return;
+
+      const from = dateFrom.value || "";
+      const to = dateTo.value || "";
+
+      let iFrom = from ? UNIQUE_DATES.indexOf(from) : -1;
+      let iTo = to ? UNIQUE_DATES.indexOf(to) : -1;
+
+      if(iFrom < 0 && from) {
+        // si no está exacto, aproximamos al siguiente >=
+        iFrom = UNIQUE_DATES.findIndex(x => x >= from);
+        if(iFrom < 0) iFrom = 0;
+      }
+      if(iTo < 0 && to){
+        // aproximamos al último <=
+        iTo = -1;
+        for(let i=UNIQUE_DATES.length-1;i>=0;i--){
+          if(UNIQUE_DATES[i] <= to){ iTo = i; break; }
+        }
+        if(iTo < 0) iTo = UNIQUE_DATES.length-1;
+      }
+
+      if(!from && !to){
+        // sin filtro: sliders en extremos
+        rangeStart.value = 0;
+        rangeEnd.value = UNIQUE_DATES.length-1;
+      } else {
+        rangeStart.value = clamp(iFrom < 0 ? 0 : iFrom, 0, UNIQUE_DATES.length-1);
+        rangeEnd.value = clamp(iTo < 0 ? UNIQUE_DATES.length-1 : iTo, 0, UNIQUE_DATES.length-1);
+      }
+
+      updateSliderFill();
+    }
+
+    function applyDateFilter(proyectos){
+      const from = dateFrom.value ? parseISODate(dateFrom.value) : null;
+      const to = dateTo.value ? parseISODate(dateTo.value) : null;
+
+      if(!from && !to){
+        rangeInfo.textContent = "Filtro: (sin filtro) · Campo: Inicio";
+        return proyectos;
+      }
+
+      const fromT = from ? from.getTime() : null;
+      const toT = to ? to.getTime() : null;
+
+      rangeInfo.textContent = `Filtro: ${dateFrom.value || "—"} → ${dateTo.value || "—"} · Campo: Inicio`;
+
+      return proyectos.filter(p => {
+        const d = parseISODate(p.Inicio); // ✅ campo Inicio
+        if(!d) return false;
+        const t = d.getTime();
+        if(fromT !== null && t < fromT) return false;
+        if(toT !== null && t > toT) return false;
+        return true;
+      });
+    }
+
+    function setQuickRange(days){
+      const dates = ALL_PROYECTOS.map(p => parseISODate(p.Inicio)).filter(Boolean).sort((a,b)=>a-b);
+      if(!dates.length) return;
+      const end = dates[dates.length-1];
+      const start = new Date(end);
+      start.setDate(start.getDate() - (days-1));
+      dateFrom.value = toISO(start);
+      dateTo.value = toISO(end);
+      syncSliderFromDates();
+      refreshDashboardUI(false);
+    }
+
+    function resetRange(){
+      dateFrom.value = "";
+      dateTo.value = "";
+      syncSliderFromDates();
+      refreshDashboardUI(false);
+    }
+
+    btn7.addEventListener("click", ()=>setQuickRange(7));
+    btn30.addEventListener("click", ()=>setQuickRange(30));
+    btn90.addEventListener("click", ()=>setQuickRange(90));
+    btnReset.addEventListener("click", resetRange);
+
+    dateFrom.addEventListener("change", ()=>{ syncSliderFromDates(); refreshDashboardUI(false); });
+    dateTo.addEventListener("change", ()=>{ syncSliderFromDates(); refreshDashboardUI(false); });
+
+function updateSliderConstraints(){
+  // Asegura que start <= end y define límites
+  let s = Number(rangeStart.value);
+  let e = Number(rangeEnd.value);
+
+  if(s > e){
+    // si se cruzan, empuja el otro para que queden iguales
+    e = s;
+    rangeEnd.value = String(e);
+  }
+
+  // limita el rango: start no puede pasar de end, end no puede bajar de start
+  rangeStart.max = rangeEnd.value;
+  rangeEnd.min = rangeStart.value;
+
+  updateSliderFill();
+}
+
+function bringThumbToFront(active){
+  // cuando están cerca, el z-index define cuál puedes agarrar
+  if(active === "start"){
+    rangeStart.style.zIndex = "3";
+    rangeEnd.style.zIndex = "2";
+  } else {
+    rangeStart.style.zIndex = "2";
+    rangeEnd.style.zIndex = "3";
+  }
+}
+
+function onStartInput(){
+  bringThumbToFront("start");
+  updateSliderConstraints();
+  // sincroniza fechas desde sliders
+  const a = Number(rangeStart.value);
+  const b = Number(rangeEnd.value);
+  dateFrom.value = UNIQUE_DATES[a] || "";
+  dateTo.value = UNIQUE_DATES[b] || "";
+  refreshDashboardUI(false);
+}
+
+function onEndInput(){
+  bringThumbToFront("end");
+  // Asegura end >= start
+  let s = Number(rangeStart.value);
+  let e = Number(rangeEnd.value);
+  if(e < s){
+    s = e;
+    rangeStart.value = String(s);
+  }
+  rangeStart.max = rangeEnd.value;
+  rangeEnd.min = rangeStart.value;
+
+  updateSliderFill();
+  // sincroniza fechas desde sliders
+  const a = Number(rangeStart.value);
+  const b = Number(rangeEnd.value);
+  dateFrom.value = UNIQUE_DATES[a] || "";
+  dateTo.value = UNIQUE_DATES[b] || "";
+  refreshDashboardUI(false);
+}
+
+// ✅ Eventos (input + pointerdown para traer al frente)
+rangeStart.addEventListener("input", onStartInput);
+rangeEnd.addEventListener("input", onEndInput);
+
+rangeStart.addEventListener("pointerdown", () => bringThumbToFront("start"));
+rangeEnd.addEventListener("pointerdown", () => bringThumbToFront("end"));
+
+    async function refreshDashboardUI(fetchJson=true){
+      try{
+        if(fetchJson){
+          const res = await fetch(`data/dashboard.json?ts=${Date.now()}`);
+          const data = await res.json();
+          ALL_PROYECTOS = data?.datasets?.proyectos || [];
+          generatedAtGlobal = data.generated_at;
+
+          UNIQUE_DATES = getUniqueDatesFromInicio(ALL_PROYECTOS);
+
+          const maxIndex = Math.max(UNIQUE_DATES.length - 1, 0);
+          rangeStart.min = 0; rangeStart.max = maxIndex; rangeStart.step = 1;
+          rangeEnd.min = 0; rangeEnd.max = maxIndex; rangeEnd.step = 1;
+
+          // primera carga: slider extremos (si no hay filtro)
+          syncSliderFromDates();
+          updateSliderFill();
+          // deja el start arriba por defecto
+          rangeStart.style.zIndex = "3";
+          rangeEnd.style.zIndex = "2";
+          updateSliderConstraints();
+          
+        }
+
+        const proyectos = applyDateFilter(ALL_PROYECTOS);
+
+        const totalOpp = proyectos.length;
+
+        let wonOpp=0, demoOpp=0, presentedOpp=0, detOpp=0, finOpp=0;
+        let totalValor=0, wonValor=0;
+
+        const estadoCount = {};
+        const estadoValor = {};
+
+        for(const p of proyectos){
+          const estado = (p.Estado || "Sin estado").toString().trim();
+          const v = Number(p.Valor || 0);
+          const val = isNaN(v) ? 0 : v;
+
+          estadoCount[estado] = (estadoCount[estado] || 0) + 1;
+          estadoValor[estado] = (estadoValor[estado] || 0) + val;
+
+          totalValor += val;
+
+          if(STATE_WON.has(estado)){ wonOpp += 1; wonValor += val; }
+          if(STATE_DEMO.has(estado)) demoOpp += 1;
+          if(STATE_PRESENTED.has(estado)) presentedOpp += 1;
+          if(STATE_DETENIDO.has(estado)) detOpp += 1;
+          if(STATE_FINALIZADO.has(estado)) finOpp += 1;
+        }
+
+        const winRate = totalOpp > 0 ? Math.round((wonOpp / totalOpp) * 100) : 0;
+
+        renderKpisTiles({
+          totalOpp, wonOpp, demoOpp, presentedOpp, detOpp, finOpp,
+          totalValor, wonValor, winRate,
+          generatedAt: generatedAtGlobal
+        });
+
+        const estadosOrden = Object.keys(estadoCount)
+          .map(k => ({ estado:k, count:estadoCount[k], valor:estadoValor[k] || 0 }))
+          .sort((a,b) => b.count - a.count);
+
+        const labelsCount = estadosOrden.map(x => x.estado);
+        const valuesCount = estadosOrden.map(x => x.count);
+
+        chartEstadosCount = renderBarChart3D(chartEstadosCount, "chartEstadosCount", labelsCount, valuesCount);
+
+        const estadosValorOrden = [...estadosOrden].sort((a,b) => (b.valor||0) - (a.valor||0));
+        const { top, othersValue } = topNWithOthers(estadosValorOrden, 5);
+
+        const labelsValor = top.map(x => x.estado);
+        const valuesValor = top.map(x => Math.round(x.valor || 0));
+
+        if(othersValue > 0){
+          labelsValor.push("Otros");
+          valuesValor.push(Math.round(othersValue));
+        }
+
+        chartEstadosValorDonut = renderDonut(chartEstadosValorDonut, "chartEstadosValorDonut", labelsValor, valuesValor);
+
+      }catch(err){
+        console.error("❌ Error refrescando dashboard UI", err);
+      }
+    }
+
+    refreshDashboardUI(true);
+    setInterval(()=>refreshDashboardUI(true), 60000);
+  </script>
+</body>
+</html>
     buildAccessTable();
   </script>
 </body>
